@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login - TVMS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="card">
+    <h2>Login</h2>
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+    <form action="/login" method="POST">
+      <label>Username</label>
+      <input type="text" name="username" required>
+      <label>Password</label>
+      <input type="password" name="password" required>
+      <button type="submit">Login</button>
+    </form>
+    <a class="link" href="/register">Don't have an account? Register</a>
+  </div>
+</body>
+</html>
