@@ -1,0 +1,10 @@
+USE tvms;
+
+CREATE TABLE IF NOT EXISTS vehicles (
+  vehicle_id INT AUTO_INCREMENT PRIMARY KEY,
+  registration_no VARCHAR(20) NOT NULL UNIQUE,
+  owner_name VARCHAR(100) NOT NULL,
+  vehicle_type VARCHAR(50) NOT NULL,
+  model VARCHAR(100),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

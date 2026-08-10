@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vehicles - TVMS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="card list-card">
+    <h2>Vehicles</h2>
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+    <a class="link" href="/vehicles/add">+ Add Vehicle</a>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Registration No</th>
+          <th>Owner</th>
+          <th>Type</th>
+          <th>Model</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (vehicles.length === 0) { %>
+          <tr><td colspan="5">No vehicles found. Add one to get started.</td></tr>
+        <% } %>
+        <% vehicles.forEach(v => { %>
+          <tr>
+            <td><%= v.registration_no %></td>
+            <td><%= v.owner_name %></td>
+            <td><%= v.vehicle_type %></td>
+            <td><%= v.model || '-' %></td>
+            <td>
+              <a href="/vehicles/edit/<%= v.vehicle_id %>">Edit</a>
+              <form action="/vehicles/delete/<%= v.vehicle_id %>" method="POST" style="display:inline"
+                    onsubmit="return confirm('Delete this vehicle?');">
+                <button type="submit" class="link-btn">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <a class="link" href="/dashboard">&larr; Back to Dashboard</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= mode === 'add' ? 'Add Vehicle' : 'Edit Vehicle' %> - TVMS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="card">
+    <h2><%= mode === 'add' ? 'Add Vehicle' : 'Edit Vehicle' %></h2>
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+    <form action="<%= mode === 'add' ? '/vehicles/add' : '/vehicles/edit/' + vehicle.vehicle_id %>" method="POST">
+      <label>Registration Number</label>
+      <input type="text" name="registration_no" value="<%= vehicle ? vehicle.registration_no : '' %>" required>
+
+      <label>Owner Name</label>
+      <input type="text" name="owner_name" value="<%= vehicle ? vehicle.owner_name : '' %>" required>
+
+      <label>Vehicle Type</label>
+      <select name="vehicle_type">
+        <option value="Two-wheeler" <%= vehicle && vehicle.vehicle_type === 'Two-wheeler' ? 'selected' : '' %>>Two-wheeler</option>
+        <option value="Car" <%= vehicle && vehicle.vehicle_type === 'Car' ? 'selected' : '' %>>Car</option>
+        <option value="Truck" <%= vehicle && vehicle.vehicle_type === 'Truck' ? 'selected' : '' %>>Truck</option>
+        <option value="Bus" <%= vehicle && vehicle.vehicle_type === 'Bus' ? 'selected' : '' %>>Bus</option>
+        <option value="Other" <%= vehicle && vehicle.vehicle_type === 'Other' ? 'selected' : '' %>>Other</option>
+      </select>
+
+      <label>Model</label>
+      <input type="text" name="model" value="<%= vehicle ? (vehicle.model || '') : '' %>">
+
+      <button type="submit"><%= mode === 'add' ? 'Add Vehicle' : 'Save Changes' %></button>
+    </form>
+    <a class="link" href="/vehicles">&larr; Back to Vehicles</a>
+  </div>
+</body>
+</html>
