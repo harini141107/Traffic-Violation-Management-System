@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Violators - TVMS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="card list-card">
+    <h2>Violators</h2>
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+    <a class="link" href="/violators/add">+ Add Violator</a>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>License No</th>
+          <th>Phone</th>
+          <th>Address</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (violators.length === 0) { %>
+          <tr><td colspan="5">No violators found. Add one to get started.</td></tr>
+        <% } %>
+        <% violators.forEach(v => { %>
+          <tr>
+            <td><%= v.name %></td>
+            <td><%= v.license_no %></td>
+            <td><%= v.phone || '-' %></td>
+            <td><%= v.address || '-' %></td>
+            <td>
+              <a href="/violators/edit/<%= v.violator_id %>">Edit</a>
+              <form action="/violators/delete/<%= v.violator_id %>" method="POST" style="display:inline"
+                    onsubmit="return confirm('Delete this violator?');">
+                <button type="submit" class="link-btn">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <a class="link" href="/dashboard">&larr; Back to Dashboard</a>
+  </div>
+</body>
+</html>

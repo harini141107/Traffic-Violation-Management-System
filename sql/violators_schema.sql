@@ -1,0 +1,10 @@
+USE tvms;
+
+CREATE TABLE IF NOT EXISTS violators (
+  violator_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  license_no VARCHAR(30) NOT NULL UNIQUE,
+  phone VARCHAR(15),
+  address VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

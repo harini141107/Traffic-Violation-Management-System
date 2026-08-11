@@ -5,6 +5,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/authRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const vehicleRoutes = require('./routes/vehicleRoutes');
+const violatorRoutes = require('./routes/violatorRoutes');
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.get('/', (req, res) => res.redirect('/login'));
 app.use('/', authRoutes);
 app.use('/', dashboardRoutes);
 app.use('/', vehicleRoutes);
+app.use('/', violatorRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
