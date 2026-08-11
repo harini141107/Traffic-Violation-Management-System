@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Search Violations - TVMS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="card list-card">
+    <h2>Search Violations</h2>
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+
+    <form action="/search" method="GET">
+      <label>Vehicle Registration No</label>
+      <input type="text" name="registration_no" value="<%= filters.registration_no || '' %>">
+
+      <label>Violator Name</label>
+      <input type="text" name="violator_name" value="<%= filters.violator_name || '' %>">
+
+      <label>Violation Type</label>
+      <select name="violation_type">
+        <option value="">-- Any --</option>
+        <% types.forEach(t => { %>
+          <option value="<%= t %>" <%= filters.violation_type === t ? 'selected' : '' %>><%= t %></option>
+        <% }) %>
+      </select>
+
+      <label>From Date</label>
+      <input type="date" name="from_date" value="<%= filters.from_date || '' %>">
+
+      <label>To Date</label>
+      <input type="date" name="to_date" value="<%= filters.to_date || '' %>">
+
+      <button type="submit">Search</button>
+    </form>
+
+    <% if (searched) { %>
+      <h3 style="margin-top:1.5rem;">Results (<%= results.length %>)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Vehicle</th>
+            <th>Violator</th>
+            <th>Type</th>
+            <th>Location</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (results.length === 0) { %>
+            <tr><td colspan="5">No matching violations found.</td></tr>
+          <% } %>
+          <% results.forEach(r => { %>
+            <tr>
+              <td><%= r.registration_no %></td>
+              <td><%= r.violator_name %></td>
+              <td><%= r.violation_type %></td>
+              <td><%= r.location %></td>
+              <td><%= new Date(r.violation_date).toLocaleString() %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+
+    <a class="link" href="/dashboard">&larr; Back to Dashboard</a>
+  </div>
+</body>
+</html>
