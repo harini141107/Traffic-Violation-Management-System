@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reports - TVMS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="card list-card">
+    <h2>Reports</h2>
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+
+    <div style="display:flex; gap:1rem; margin: 1rem 0;">
+      <div style="flex:1; background:#f4f5f7; padding:1rem; border-radius:6px; text-align:center;">
+        <div style="font-size:1.8rem; font-weight:bold; color:#1f3864;"><%= totalVehicles %></div>
+        <div>Vehicles</div>
+      </div>
+      <div style="flex:1; background:#f4f5f7; padding:1rem; border-radius:6px; text-align:center;">
+        <div style="font-size:1.8rem; font-weight:bold; color:#1f3864;"><%= totalViolators %></div>
+        <div>Violators</div>
+      </div>
+      <div style="flex:1; background:#f4f5f7; padding:1rem; border-radius:6px; text-align:center;">
+        <div style="font-size:1.8rem; font-weight:bold; color:#1f3864;"><%= totalViolations %></div>
+        <div>Violations</div>
+      </div>
+    </div>
+
+    <h3>Violations by Type</h3>
+    <table>
+      <thead>
+        <tr><th>Violation Type</th><th>Count</th></tr>
+      </thead>
+      <tbody>
+        <% if (byType.length === 0) { %>
+          <tr><td colspan="2">No data yet.</td></tr>
+        <% } %>
+        <% byType.forEach(t => { %>
+          <tr><td><%= t.violation_type %></td><td><%= t.count %></td></tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <h3>Recent Violations</h3>
+    <table>
+      <thead>
+        <tr><th>Vehicle</th><th>Violator</th><th>Type</th><th>Location</th><th>Date</th></tr>
+      </thead>
+      <tbody>
+        <% if (recent.length === 0) { %>
+          <tr><td colspan="5">No data yet.</td></tr>
+        <% } %>
+        <% recent.forEach(r => { %>
+          <tr>
+            <td><%= r.registration_no %></td>
+            <td><%= r.violator_name %></td>
+            <td><%= r.violation_type %></td>
+            <td><%= r.location %></td>
+            <td><%= new Date(r.violation_date).toLocaleString() %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <a class="link" href="/dashboard">&larr; Back to Dashboard</a>
+  </div>
+</body>
+</html>

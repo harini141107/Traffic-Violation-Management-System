@@ -8,6 +8,7 @@ const vehicleRoutes = require('./routes/vehicleRoutes');
 const violatorRoutes = require('./routes/violatorRoutes');
 const violationRoutes = require('./routes/violationRoutes');
 const searchRoutes = require('./routes/searchRoutes');
+const reportRoutes = require('./routes/reportRoutes');
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use('/', searchRoutes);
+app.use('/', reportRoutes);
 
 app.use(
   session({
