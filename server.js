@@ -9,14 +9,13 @@ const violatorRoutes = require('./routes/violatorRoutes');
 const violationRoutes = require('./routes/violationRoutes');
 const searchRoutes = require('./routes/searchRoutes');
 const reportRoutes = require('./routes/reportRoutes');
+const challanRoutes = require('./routes/challanRoutes');
 
 const app = express();
 
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
-app.use('/', searchRoutes);
-app.use('/', reportRoutes);
 
 app.use(
   session({
@@ -34,6 +33,9 @@ app.use('/', dashboardRoutes);
 app.use('/', vehicleRoutes);
 app.use('/', violatorRoutes);
 app.use('/', violationRoutes);
+app.use('/', searchRoutes);
+app.use('/', reportRoutes);
+app.use('/', challanRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Generate Challan - TVMS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="card">
+    <h2>Generate Challan</h2>
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+    <form action="/challans/add" method="POST">
+      <label>Violation</label>
+      <select name="violation_id" required>
+        <option value="">-- Select Violation --</option>
+        <% violations.forEach(v => { %>
+          <option value="<%= v.violation_id %>">
+            <%= v.registration_no %> - <%= v.violator_name %> - <%= v.violation_type %> (<%= new Date(v.violation_date).toLocaleDateString() %>)
+          </option>
+        <% }) %>
+      </select>
+
+      <label>Due Date</label>
+      <input type="date" name="due_date" required>
+
+      <button type="submit">Generate Challan</button>
+    </form>
+    <a class="link" href="/challans">&larr; Back to Challans</a>
+  </div>
+</body>
+</html>

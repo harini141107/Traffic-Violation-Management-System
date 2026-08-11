@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Challans - TVMS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="card list-card">
+    <h2>Challans</h2>
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+    <a class="link" href="/challans/add">+ Generate Challan</a>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Vehicle</th>
+          <th>Violator</th>
+          <th>Type</th>
+          <th>Fine</th>
+          <th>Due Date</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (challans.length === 0) { %>
+          <tr><td colspan="7">No challans generated yet.</td></tr>
+        <% } %>
+        <% challans.forEach(c => { %>
+          <tr>
+            <td><%= c.registration_no %></td>
+            <td><%= c.violator_name %></td>
+            <td><%= c.violation_type %></td>
+            <td>₹<%= c.fine_amount %></td>
+            <td><%= new Date(c.due_date).toLocaleDateString() %></td>
+            <td><%= c.status %></td>
+            <td>
+              <form action="/challans/delete/<%= c.challan_id %>" method="POST" style="display:inline"
+                    onsubmit="return confirm('Delete this challan?');">
+                <button type="submit" class="link-btn">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <a class="link" href="/dashboard">&larr; Back to Dashboard</a>
+  </div>
+</body>
+</html>
