@@ -1,0 +1,102 @@
+const express = require('express');
+const router = express.Router();
+const pool = require('../config/db');
+const { requireLogin } = require('../middleware/auth');
+
+const VIOLATION_TYPES = [
+  'Signal Jumping', 'No Helmet', 'Triple Riding', 'Wrong Side Driving',
+  'Speeding', 'No Seatbelt', 'Illegal Parking', 'Driving Without License'
+];
+
+// GET all violations (list view)
+router.get('/violations', requireLogin, async (req, res) => {
+  try {
+    const [violations] = await pool.query(`
+      SELECT v.violation_id, v.violation_type, v.location, v.violation_date,
+             veh.registration_no, vio.name AS violator_name
+      FROM violations v
+      JOIN vehicles veh ON v.vehicle_id = veh.vehicle_id
+      JOIN violators vio ON v.violator_id = vio.violator_id
+      ORDER BY v.violation_date DESC
+    `);
+    res.render('violations', { violations, user: req.session.user, error: null });
+  } catch (err) {
+    console.error(err);
+    res.render('violations', { violations: [], user: req.session.user, error: 'Could not load violations.' });
+  }
+});
+
+// GET add violation form
+router.get('/violations/add', requireLogin, async (req, res) => {
+  try {
+    const [vehicles] = await pool.query('SELECT vehicle_id, registration_no FROM vehicles ORDER BY registration_no');
+    const [violators] = await pool.query('SELECT violator_id, name, license_no FROM violators ORDER BY name');
+    res.render('violation-form', {
+      user: req.session.user, vehicles, violators, types: VIOLATION_TYPES,
+      violation: null, error: null, mode: 'add',
+    });
+  } catch (err) {
+    console.error(err);
+    res.redirect('/violations');
+  }
+});
+
+// POST add violation
+router.post('/violations/add', requireLogin, async (req, res) => {
+  const { vehicle_id, violator_id, violation_type, location, violation_date } = req.body;
+  try {
+    await pool.query(
+      'INSERT INTO violations (vehicle_id, violator_id, violation_type, location, violation_date) VALUES (?, ?, ?, ?, ?)',
+      [vehicle_id, violator_id, violation_type, location, violation_date]
+    );
+    res.redirect('/violations');
+  } catch (err) {
+    console.error(err);
+    res.redirect('/violations/add');
+  }
+});
+
+// GET edit violation form
+router.get('/violations/edit/:id', requireLogin, async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM violations WHERE violation_id = ?', [req.params.id]);
+    if (rows.length === 0) return res.redirect('/violations');
+    const [vehicles] = await pool.query('SELECT vehicle_id, registration_no FROM vehicles ORDER BY registration_no');
+    const [violators] = await pool.query('SELECT violator_id, name, license_no FROM violators ORDER BY name');
+    res.render('violation-form', {
+      user: req.session.user, vehicles, violators, types: VIOLATION_TYPES,
+      violation: rows[0], error: null, mode: 'edit',
+    });
+  } catch (err) {
+    console.error(err);
+    res.redirect('/violations');
+  }
+});
+
+// POST update violation
+router.post('/violations/edit/:id', requireLogin, async (req, res) => {
+  const { vehicle_id, violator_id, violation_type, location, violation_date } = req.body;
+  try {
+    await pool.query(
+      'UPDATE violations SET vehicle_id = ?, violator_id = ?, violation_type = ?, location = ?, violation_date = ? WHERE violation_id = ?',
+      [vehicle_id, violator_id, violation_type, location, violation_date, req.params.id]
+    );
+    res.redirect('/violations');
+  } catch (err) {
+    console.error(err);
+    res.redirect('/violations');
+  }
+});
+
+// POST delete violation
+router.post('/violations/delete/:id', requireLogin, async (req, res) => {
+  try {
+    await pool.query('DELETE FROM violations WHERE violation_id = ?', [req.params.id]);
+    res.redirect('/violations');
+  } catch (err) {
+    console.error(err);
+    res.redirect('/violations');
+  }
+});
+
+module.exports = router;
