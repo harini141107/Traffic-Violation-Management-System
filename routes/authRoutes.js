@@ -26,29 +26,37 @@ router.post('/register', async (req, res) => {
 
 // GET login page
 router.get('/login', (req, res) => {
-  res.render('login', { error: null });
+  const role = req.query.role || 'officer';
+  res.render('login', { error: null, role });
 });
 
 // POST login
 router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, role } = req.body;
   try {
     const [rows] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
     if (rows.length === 0) {
-      return res.render('login', { error: 'Invalid username or password.' });
+      return res.render('login', { error: 'Invalid username or password.', role });
     }
 
     const user = rows[0];
     const passwordMatches = await bcrypt.compare(password, user.password);
     if (!passwordMatches) {
-      return res.render('login', { error: 'Invalid username or password.' });
+      return res.render('login', { error: 'Invalid username or password.', role });
+    }
+
+    if (user.role !== role) {
+      return res.render('login', {
+        error: `This account is registered as "${user.role}", not "${role}". Please select the correct login type.`,
+        role,
+      });
     }
 
     req.session.user = { id: user.user_id, username: user.username, role: user.role };
     res.redirect('/dashboard');
   } catch (err) {
     console.error(err);
-    res.render('login', { error: 'Something went wrong. Please try again.' });
+    res.render('login', { error: 'Something went wrong. Please try again.', role });
   }
 });
 

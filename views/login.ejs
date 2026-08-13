@@ -6,11 +6,12 @@
 </head>
 <body>
   <div class="card">
-    <h2>Login</h2>
+    <h2><%= role.charAt(0).toUpperCase() + role.slice(1) %> Login</h2>
     <% if (error) { %>
       <p class="error"><%= error %></p>
     <% } %>
     <form action="/login" method="POST">
+      <input type="hidden" name="role" value="<%= role %>">
       <label>Username</label>
       <input type="text" name="username" required>
       <label>Password</label>
@@ -18,6 +19,7 @@
       <button type="submit">Login</button>
     </form>
     <a class="link" href="/register">Don't have an account? Register</a>
+    <a class="link" href="/">&larr; Back to role selection</a>
   </div>
 </body>
 </html>

@@ -26,7 +26,7 @@ app.use(
   })
 );
 
-app.get('/', (req, res) => res.redirect('/login'));
+app.get('/', (req, res) => res.render('role-select'));
 
 app.use('/', authRoutes);
 app.use('/', dashboardRoutes);
