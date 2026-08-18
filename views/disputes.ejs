@@ -1,0 +1,58 @@
+<%- include('partials/header', { pageTitle: 'Disputes', active: 'disputes' }) %>
+  <div class="page-head">
+    <h1>Disputes</h1>
+    <p class="page-sub">Challan disputes and appeals</p>
+  </div>
+  <div class="panel">
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+    <a class="link" style="margin-top:0; margin-bottom:1rem; text-align:left;" href="/disputes/add">+ File Dispute</a>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Vehicle</th>
+          <th>Violator</th>
+          <th>Fine</th>
+          <th>Reason</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (disputes.length === 0) { %>
+          <tr><td colspan="6">No disputes filed yet.</td></tr>
+        <% } %>
+        <% disputes.forEach(d => { %>
+          <tr>
+            <td><%= d.registration_no %></td>
+            <td><%= d.violator_name %></td>
+            <td>₹<%= d.fine_amount %></td>
+            <td><%= d.reason %></td>
+            <td>
+              <span class="badge <%= d.status === 'Dismissed' ? 'badge-paid' : d.status === 'Upheld' ? 'badge-unpaid' : '' %>"
+                    style="<%= d.status === 'Pending' ? 'background:#FDF3E3; color:#B9791F;' : '' %>">
+                <%= d.status %>
+              </span>
+            </td>
+            <td>
+              <% if (d.status === 'Pending') { %>
+                <form action="/disputes/resolve/<%= d.dispute_id %>" method="POST" style="display:inline-flex; gap:0.4rem; align-items:center;">
+                  <select name="status" style="width:auto; margin:0; padding:0.3rem;" required>
+                    <option value="Dismissed">Dismiss (fine stands)</option>
+                    <option value="Upheld">Uphold (waive fine)</option>
+                  </select>
+                  <input type="text" name="resolution_note" placeholder="Note" style="width:120px; margin:0; padding:0.3rem;">
+                  <button type="submit" style="width:auto; padding:0.3rem 0.6rem;">Resolve</button>
+                </form>
+              <% } else { %>
+                <%= d.resolution_note || '-' %>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+<%- include('partials/footer') %>

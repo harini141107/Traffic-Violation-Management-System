@@ -1,0 +1,27 @@
+<%- include('partials/header', { pageTitle: 'File Dispute', active: 'disputes' }) %>
+  <div class="page-head">
+    <h1>File Dispute</h1>
+  </div>
+  <div class="panel" style="max-width:480px;">
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+    <form action="/disputes/add" method="POST">
+      <label>Challan</label>
+      <select name="challan_id" required>
+        <option value="">-- Select Challan --</option>
+        <% challans.forEach(c => { %>
+          <option value="<%= c.challan_id %>">
+            <%= c.registration_no %> - <%= c.violator_name %> - <%= c.violation_type %> (₹<%= c.fine_amount %>)
+          </option>
+        <% }) %>
+      </select>
+
+      <label>Reason for Dispute</label>
+      <input type="text" name="reason" placeholder="e.g. Signal was not functioning" required>
+
+      <button type="submit">Submit Dispute</button>
+    </form>
+    <a class="link" href="/disputes">&larr; Back to Disputes</a>
+  </div>
+<%- include('partials/footer') %>

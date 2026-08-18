@@ -11,6 +11,7 @@ const searchRoutes = require('./routes/searchRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const challanRoutes = require('./routes/challanRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
+const disputeRoutes = require('./routes/disputeRoutes');
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use('/', searchRoutes);
 app.use('/', reportRoutes);
 app.use('/', challanRoutes);
 app.use('/', paymentRoutes);
+app.use('/', disputeRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
