@@ -1,32 +1,28 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Reports - TVMS</title>
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-  <div class="card list-card">
-    <h2>Reports</h2>
-    <% if (error) { %>
-      <p class="error"><%= error %></p>
-    <% } %>
+<%- include('partials/header', { pageTitle: 'Reports', active: 'reports' }) %>
+  <div class="page-head">
+    <h1>Reports</h1>
+  </div>
+  <% if (error) { %>
+    <p class="error"><%= error %></p>
+  <% } %>
 
-    <div style="display:flex; gap:1rem; margin: 1rem 0;">
-      <div style="flex:1; background:#f4f5f7; padding:1rem; border-radius:6px; text-align:center;">
-        <div style="font-size:1.8rem; font-weight:bold; color:#1f3864;"><%= totalVehicles %></div>
-        <div>Vehicles</div>
-      </div>
-      <div style="flex:1; background:#f4f5f7; padding:1rem; border-radius:6px; text-align:center;">
-        <div style="font-size:1.8rem; font-weight:bold; color:#1f3864;"><%= totalViolators %></div>
-        <div>Violators</div>
-      </div>
-      <div style="flex:1; background:#f4f5f7; padding:1rem; border-radius:6px; text-align:center;">
-        <div style="font-size:1.8rem; font-weight:bold; color:#1f3864;"><%= totalViolations %></div>
-        <div>Violations</div>
-      </div>
+  <div class="quick-links" style="margin-bottom:1.5rem;">
+    <div class="panel" style="text-align:center; margin-bottom:0;">
+      <div style="font-size:1.8rem; font-weight:bold; color:var(--navy-950);"><%= totalVehicles %></div>
+      <div>Vehicles</div>
     </div>
+    <div class="panel" style="text-align:center; margin-bottom:0;">
+      <div style="font-size:1.8rem; font-weight:bold; color:var(--navy-950);"><%= totalViolators %></div>
+      <div>Violators</div>
+    </div>
+    <div class="panel" style="text-align:center; margin-bottom:0;">
+      <div style="font-size:1.8rem; font-weight:bold; color:var(--navy-950);"><%= totalViolations %></div>
+      <div>Violations</div>
+    </div>
+  </div>
 
-    <h3>Violations by Type</h3>
+  <div class="panel">
+    <h3 style="margin-top:0;">Violations by Type</h3>
     <table>
       <thead>
         <tr><th>Violation Type</th><th>Count</th></tr>
@@ -40,8 +36,10 @@
         <% }) %>
       </tbody>
     </table>
+  </div>
 
-    <h3>Recent Violations</h3>
+  <div class="panel">
+    <h3 style="margin-top:0;">Recent Violations</h3>
     <table>
       <thead>
         <tr><th>Vehicle</th><th>Violator</th><th>Type</th><th>Location</th><th>Date</th></tr>
@@ -61,8 +59,5 @@
         <% }) %>
       </tbody>
     </table>
-
-    <a class="link" href="/dashboard">&larr; Back to Dashboard</a>
   </div>
-</body>
-</html>
+<%- include('partials/footer') %>

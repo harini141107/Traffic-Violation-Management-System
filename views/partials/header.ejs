@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title><%= typeof pageTitle !== 'undefined' ? pageTitle + ' - TVMS' : 'TVMS' %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark"><span></span><span></span><span></span></span>
+        TVMS
+      </div>
+      <div class="topbar-user">
+        <span><%= user.username %></span>
+        <span class="role-badge"><%= user.role %></span>
+        <a class="topbar-logout" href="/logout">Logout</a>
+      </div>
+    </div>
+    <div class="signal-strip"><span></span><span></span><span></span></div>
+  </header>
+  <div class="app-shell">
+    <nav class="sidebar">
+      <a href="/dashboard" class="<%= typeof active !== 'undefined' && active === 'dashboard' ? 'active' : '' %>">Dashboard</a>
+      <a href="/vehicles" class="<%= typeof active !== 'undefined' && active === 'vehicles' ? 'active' : '' %>">Vehicles</a>
+      <a href="/violators" class="<%= typeof active !== 'undefined' && active === 'violators' ? 'active' : '' %>">Violators</a>
+      <a href="/violations" class="<%= typeof active !== 'undefined' && active === 'violations' ? 'active' : '' %>">Violations</a>
+      <a href="/challans" class="<%= typeof active !== 'undefined' && active === 'challans' ? 'active' : '' %>">Challans</a>
+      <a href="/search" class="<%= typeof active !== 'undefined' && active === 'search' ? 'active' : '' %>">Search</a>
+      <a href="/reports" class="<%= typeof active !== 'undefined' && active === 'reports' ? 'active' : '' %>">Reports</a>
+    </nav>
+    <main class="main">

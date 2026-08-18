@@ -1,16 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Violations - TVMS</title>
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-  <div class="card list-card">
-    <h2>Violations</h2>
+<%- include('partials/header', { pageTitle: 'Violations', active: 'violations' }) %>
+  <div class="page-head">
+    <h1>Violations</h1>
+    <p class="page-sub">Recorded traffic violations</p>
+  </div>
+  <div class="panel">
     <% if (error) { %>
       <p class="error"><%= error %></p>
     <% } %>
-    <a class="link" href="/violations/add">+ Record Violation</a>
+    <a class="link" style="margin-top:0; margin-bottom:1rem; text-align:left;" href="/violations/add">+ Record Violation</a>
 
     <table>
       <thead>
@@ -38,15 +35,12 @@
               <a href="/violations/edit/<%= v.violation_id %>">Edit</a>
               <form action="/violations/delete/<%= v.violation_id %>" method="POST" style="display:inline"
                     onsubmit="return confirm('Delete this violation record?');">
-                <button type="submit" class="link-btn">Delete</button>
+                <button type="submit" class="link-btn" style="width:auto; padding:0;">Delete</button>
               </form>
             </td>
           </tr>
         <% }) %>
       </tbody>
     </table>
-
-    <a class="link" href="/dashboard">&larr; Back to Dashboard</a>
   </div>
-</body>
-</html>
+<%- include('partials/footer') %>

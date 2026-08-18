@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title><%= mode === 'add' ? 'Add Vehicle' : 'Edit Vehicle' %> - TVMS</title>
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-  <div class="card">
-    <h2><%= mode === 'add' ? 'Add Vehicle' : 'Edit Vehicle' %></h2>
+<%- include('partials/header', { pageTitle: mode === 'add' ? 'Add Vehicle' : 'Edit Vehicle', active: 'vehicles' }) %>
+  <div class="page-head">
+    <h1><%= mode === 'add' ? 'Add Vehicle' : 'Edit Vehicle' %></h1>
+  </div>
+  <div class="panel" style="max-width:480px;">
     <% if (error) { %>
       <p class="error"><%= error %></p>
     <% } %>
@@ -33,5 +29,4 @@
     </form>
     <a class="link" href="/vehicles">&larr; Back to Vehicles</a>
   </div>
-</body>
-</html>
+<%- include('partials/footer') %>

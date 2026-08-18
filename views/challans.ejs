@@ -1,16 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Challans - TVMS</title>
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-  <div class="card list-card">
-    <h2>Challans</h2>
+<%- include('partials/header', { pageTitle: 'Challans', active: 'challans' }) %>
+  <div class="page-head">
+    <h1>Challans</h1>
+    <p class="page-sub">Generated challans and payment status</p>
+  </div>
+  <div class="panel">
     <% if (error) { %>
       <p class="error"><%= error %></p>
     <% } %>
-    <a class="link" href="/challans/add">+ Generate Challan</a>
+    <a class="link" style="margin-top:0; margin-bottom:1rem; text-align:left;" href="/challans/add">+ Generate Challan</a>
 
     <table>
       <thead>
@@ -35,19 +32,19 @@
             <td><%= c.violation_type %></td>
             <td>₹<%= c.fine_amount %></td>
             <td><%= new Date(c.due_date).toLocaleDateString() %></td>
-            <td><%= c.status %></td>
+            <td><span class="badge <%= c.status === 'Paid' ? 'badge-paid' : 'badge-unpaid' %>"><%= c.status %></span></td>
             <td>
+              <% if (c.status === 'Unpaid') { %>
+                <a href="/payments/pay/<%= c.challan_id %>">Pay</a>
+              <% } %>
               <form action="/challans/delete/<%= c.challan_id %>" method="POST" style="display:inline"
                     onsubmit="return confirm('Delete this challan?');">
-                <button type="submit" class="link-btn">Delete</button>
+                <button type="submit" class="link-btn" style="width:auto; padding:0;">Delete</button>
               </form>
             </td>
           </tr>
         <% }) %>
       </tbody>
     </table>
-
-    <a class="link" href="/dashboard">&larr; Back to Dashboard</a>
   </div>
-</body>
-</html>
+<%- include('partials/footer') %>

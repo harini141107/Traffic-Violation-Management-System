@@ -1,16 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Violators - TVMS</title>
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-  <div class="card list-card">
-    <h2>Violators</h2>
+<%- include('partials/header', { pageTitle: 'Violators', active: 'violators' }) %>
+  <div class="page-head">
+    <h1>Violators</h1>
+    <p class="page-sub">Manage violator records</p>
+  </div>
+  <div class="panel">
     <% if (error) { %>
       <p class="error"><%= error %></p>
     <% } %>
-    <a class="link" href="/violators/add">+ Add Violator</a>
+    <a class="link" style="margin-top:0; margin-bottom:1rem; text-align:left;" href="/violators/add">+ Add Violator</a>
 
     <table>
       <thead>
@@ -36,15 +33,12 @@
               <a href="/violators/edit/<%= v.violator_id %>">Edit</a>
               <form action="/violators/delete/<%= v.violator_id %>" method="POST" style="display:inline"
                     onsubmit="return confirm('Delete this violator?');">
-                <button type="submit" class="link-btn">Delete</button>
+                <button type="submit" class="link-btn" style="width:auto; padding:0;">Delete</button>
               </form>
             </td>
           </tr>
         <% }) %>
       </tbody>
     </table>
-
-    <a class="link" href="/dashboard">&larr; Back to Dashboard</a>
   </div>
-</body>
-</html>
+<%- include('partials/footer') %>

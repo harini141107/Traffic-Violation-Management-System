@@ -1,0 +1,15 @@
+<%- include('partials/header', { pageTitle: 'Receipt', active: 'challans' }) %>
+  <div class="page-head">
+    <h1>Payment Successful</h1>
+  </div>
+  <div class="panel" style="max-width:480px;">
+    <p><strong>Challan ID:</strong> #<%= payment.challan_id %></p>
+    <p><strong>Vehicle:</strong> <%= payment.registration_no %></p>
+    <p><strong>Violator:</strong> <%= payment.violator_name %></p>
+    <p><strong>Violation:</strong> <%= payment.violation_type %></p>
+    <p><strong>Amount Paid:</strong> ₹<%= payment.amount_paid %></p>
+    <p><strong>Payment Mode:</strong> <%= payment.payment_mode %></p>
+    <p><strong>Date:</strong> <%= new Date(payment.payment_date).toLocaleString() %></p>
+    <a class="link" href="/challans">&larr; Back to Challans</a>
+  </div>
+<%- include('partials/footer') %>

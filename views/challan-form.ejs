@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Generate Challan - TVMS</title>
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-  <div class="card">
-    <h2>Generate Challan</h2>
+<%- include('partials/header', { pageTitle: 'Generate Challan', active: 'challans' }) %>
+  <div class="page-head">
+    <h1>Generate Challan</h1>
+  </div>
+  <div class="panel" style="max-width:480px;">
     <% if (error) { %>
       <p class="error"><%= error %></p>
     <% } %>
@@ -28,5 +24,4 @@
     </form>
     <a class="link" href="/challans">&larr; Back to Challans</a>
   </div>
-</body>
-</html>
+<%- include('partials/footer') %>

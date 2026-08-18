@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Search Violations - TVMS</title>
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-  <div class="card list-card">
-    <h2>Search Violations</h2>
+<%- include('partials/header', { pageTitle: 'Search', active: 'search' }) %>
+  <div class="page-head">
+    <h1>Search Violations</h1>
+  </div>
+  <div class="panel">
     <% if (error) { %>
       <p class="error"><%= error %></p>
     <% } %>
@@ -32,11 +28,13 @@
       <label>To Date</label>
       <input type="date" name="to_date" value="<%= filters.to_date || '' %>">
 
-      <button type="submit">Search</button>
+      <button type="submit" style="width:auto; padding:0.6rem 1.5rem;">Search</button>
     </form>
+  </div>
 
-    <% if (searched) { %>
-      <h3 style="margin-top:1.5rem;">Results (<%= results.length %>)</h3>
+  <% if (searched) { %>
+    <div class="panel">
+      <h3 style="margin-top:0;">Results (<%= results.length %>)</h3>
       <table>
         <thead>
           <tr>
@@ -62,9 +60,6 @@
           <% }) %>
         </tbody>
       </table>
-    <% } %>
-
-    <a class="link" href="/dashboard">&larr; Back to Dashboard</a>
-  </div>
-</body>
-</html>
+    </div>
+  <% } %>
+<%- include('partials/footer') %>

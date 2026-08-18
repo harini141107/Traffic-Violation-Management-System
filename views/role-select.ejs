@@ -1,23 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <title>TVMS - Select Login Type</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <div class="card">
-    <h2>Traffic Violation Management System</h2>
-    <p style="text-align:center; margin-bottom:1.5rem;">Select how you'd like to log in</p>
-
-    <a href="/login?role=admin" style="text-decoration:none;">
-      <button type="button" style="margin-bottom:0.75rem;">Admin Login</button>
-    </a>
-    <a href="/login?role=officer" style="text-decoration:none;">
-      <button type="button" style="margin-bottom:0.75rem;">Officer Login</button>
-    </a>
-    <a href="/login?role=violator" style="text-decoration:none;">
-      <button type="button">Violator Login</button>
-    </a>
+  <div class="auth-shell">
+    <div class="auth-left">
+      <span class="brand-mark"><span></span><span></span><span></span></span>
+      <h1>Traffic Violation<br>Management System</h1>
+      <p>A unified platform for recording violations, issuing challans, and tracking fine payments.</p>
+    </div>
+    <div class="auth-right">
+      <div class="auth-card">
+        <h2>Select Login Type</h2>
+        <a href="/login?role=admin" style="text-decoration:none;">
+          <button type="button" style="margin-bottom:0.75rem;">Admin Login</button>
+        </a>
+        <a href="/login?role=officer" style="text-decoration:none;">
+          <button type="button" style="margin-bottom:0.75rem;">Officer Login</button>
+        </a>
+        <a href="/login?role=violator" style="text-decoration:none;">
+          <button type="button">Violator Login</button>
+        </a>
+      </div>
+    </div>
   </div>
 </body>
 </html>

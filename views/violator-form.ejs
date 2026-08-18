@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title><%= mode === 'add' ? 'Add Violator' : 'Edit Violator' %> - TVMS</title>
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-  <div class="card">
-    <h2><%= mode === 'add' ? 'Add Violator' : 'Edit Violator' %></h2>
+<%- include('partials/header', { pageTitle: mode === 'add' ? 'Add Violator' : 'Edit Violator', active: 'violators' }) %>
+  <div class="page-head">
+    <h1><%= mode === 'add' ? 'Add Violator' : 'Edit Violator' %></h1>
+  </div>
+  <div class="panel" style="max-width:480px;">
     <% if (error) { %>
       <p class="error"><%= error %></p>
     <% } %>
@@ -27,5 +23,4 @@
     </form>
     <a class="link" href="/violators">&larr; Back to Violators</a>
   </div>
-</body>
-</html>
+<%- include('partials/footer') %>
