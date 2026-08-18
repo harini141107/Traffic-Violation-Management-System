@@ -8,6 +8,19 @@ const VIOLATION_TYPES = [
   'Speeding', 'No Seatbelt', 'Illegal Parking', 'Driving Without License'
 ];
 
+const DEMERIT_POINTS = {
+  'Signal Jumping': 4,
+  'No Helmet': 2,
+  'Triple Riding': 2,
+  'Wrong Side Driving': 5,
+  'Speeding': 4,
+  'No Seatbelt': 2,
+  'Illegal Parking': 1,
+  'Driving Without License': 6,
+};
+
+const DEMERIT_THRESHOLD = 12;
+
 // GET all violations (list view)
 router.get('/violations', requireLogin, async (req, res) => {
   try {
@@ -41,18 +54,44 @@ router.get('/violations/add', requireLogin, async (req, res) => {
   }
 });
 
-// POST add violation
+// POST add violation — now also assigns demerit points and checks escalation
 router.post('/violations/add', requireLogin, async (req, res) => {
   const { vehicle_id, violator_id, violation_type, location, violation_date } = req.body;
+  const connection = await pool.getConnection();
   try {
-    await pool.query(
+    await connection.beginTransaction();
+
+    await connection.query(
       'INSERT INTO violations (vehicle_id, violator_id, violation_type, location, violation_date) VALUES (?, ?, ?, ?, ?)',
       [vehicle_id, violator_id, violation_type, location, violation_date]
     );
+
+    const points = DEMERIT_POINTS[violation_type] || 1;
+
+    await connection.query(
+      'UPDATE violators SET demerit_points = demerit_points + ? WHERE violator_id = ?',
+      [points, violator_id]
+    );
+
+    const [[violator]] = await connection.query(
+      'SELECT demerit_points FROM violators WHERE violator_id = ?', [violator_id]
+    );
+
+    if (violator.demerit_points >= DEMERIT_THRESHOLD) {
+      await connection.query(
+        "UPDATE violators SET license_status = 'Flagged for Suspension' WHERE violator_id = ?",
+        [violator_id]
+      );
+    }
+
+    await connection.commit();
     res.redirect('/violations');
   } catch (err) {
+    await connection.rollback();
     console.error(err);
     res.redirect('/violations/add');
+  } finally {
+    connection.release();
   }
 });
 
@@ -73,7 +112,7 @@ router.get('/violations/edit/:id', requireLogin, async (req, res) => {
   }
 });
 
-// POST update violation
+// POST update violation (does not re-adjust demerit points, to keep this simple)
 router.post('/violations/edit/:id', requireLogin, async (req, res) => {
   const { vehicle_id, violator_id, violation_type, location, violation_date } = req.body;
   try {

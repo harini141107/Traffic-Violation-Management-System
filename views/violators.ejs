@@ -15,20 +15,26 @@
           <th>Name</th>
           <th>License No</th>
           <th>Phone</th>
-          <th>Address</th>
+          <th>Demerit Points</th>
+          <th>License Status</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         <% if (violators.length === 0) { %>
-          <tr><td colspan="5">No violators found. Add one to get started.</td></tr>
+          <tr><td colspan="6">No violators found. Add one to get started.</td></tr>
         <% } %>
         <% violators.forEach(v => { %>
           <tr>
             <td><%= v.name %></td>
             <td><%= v.license_no %></td>
             <td><%= v.phone || '-' %></td>
-            <td><%= v.address || '-' %></td>
+            <td><%= v.demerit_points %></td>
+            <td>
+              <span class="badge <%= v.license_status === 'Active' ? 'badge-paid' : 'badge-unpaid' %>">
+                <%= v.license_status %>
+              </span>
+            </td>
             <td>
               <a href="/violators/edit/<%= v.violator_id %>">Edit</a>
               <form action="/violators/delete/<%= v.violator_id %>" method="POST" style="display:inline"
