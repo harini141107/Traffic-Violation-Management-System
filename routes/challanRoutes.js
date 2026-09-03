@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
-const { requireLogin } = require('../middleware/auth');
+const { requireLogin, requireRole } = require('../middleware/auth');
 
 // Fixed fine amounts per violation type
 const FINE_RATES = {
@@ -15,7 +15,7 @@ const FINE_RATES = {
   'Driving Without License': 2000,
 };
 
-// GET all challans (list view)
+// GET all challans (list view) — everyone logged in can see this
 router.get('/challans', requireLogin, async (req, res) => {
   try {
     const [challans] = await pool.query(`
@@ -35,8 +35,8 @@ router.get('/challans', requireLogin, async (req, res) => {
   }
 });
 
-// GET generate challan form — only shows violations that don't already have a challan
-router.get('/challans/add', requireLogin, async (req, res) => {
+// GET generate challan form — admin/officer only
+router.get('/challans/add', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
   try {
     const [violations] = await pool.query(`
       SELECT v.violation_id, v.violation_type, v.location, v.violation_date,
@@ -55,8 +55,8 @@ router.get('/challans/add', requireLogin, async (req, res) => {
   }
 });
 
-// POST generate challan
-router.post('/challans/add', requireLogin, async (req, res) => {
+// POST generate challan — admin/officer only
+router.post('/challans/add', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
   const { violation_id, due_date } = req.body;
   try {
     const [rows] = await pool.query('SELECT violation_type FROM violations WHERE violation_id = ?', [violation_id]);
@@ -75,8 +75,8 @@ router.post('/challans/add', requireLogin, async (req, res) => {
   }
 });
 
-// POST delete challan
-router.post('/challans/delete/:id', requireLogin, async (req, res) => {
+// POST delete challan — admin/officer only
+router.post('/challans/delete/:id', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
   try {
     await pool.query('DELETE FROM challans WHERE challan_id = ?', [req.params.id]);
     res.redirect('/challans');
