@@ -4,30 +4,38 @@
     <p class="page-sub">Welcome back, <%= user.username %> (<%= user.role %>)</p>
   </div>
 
-  <div class="quick-links">
-    <a class="quick-link" href="/vehicles">
-      <span class="qtitle">Vehicles</span>
-      <span class="qdesc">Add, edit, and manage registered vehicles</span>
-    </a>
-    <a class="quick-link" href="/violators">
-      <span class="qtitle">Violators</span>
-      <span class="qdesc">Manage violator records</span>
-    </a>
-    <a class="quick-link" href="/violations">
-      <span class="qtitle">Violations</span>
-      <span class="qdesc">Record and view traffic violations</span>
-    </a>
+    <div class="quick-links">
+    <% if (user.role === 'admin' || user.role === 'officer') { %>
+      <a class="quick-link" href="/vehicles">
+        <span class="qtitle">Vehicles</span>
+        <span class="qdesc">Add, edit, and manage registered vehicles</span>
+      </a>
+      <a class="quick-link" href="/violators">
+        <span class="qtitle">Violators</span>
+        <span class="qdesc">Manage violator records</span>
+      </a>
+      <a class="quick-link" href="/violations">
+        <span class="qtitle">Violations</span>
+        <span class="qdesc">Record and view traffic violations</span>
+      </a>
+    <% } %>
     <a class="quick-link" href="/challans">
       <span class="qtitle">Challans</span>
-      <span class="qdesc">Generate and track challans</span>
+      <span class="qdesc"><%= user.role === 'violator' ? 'View and pay your challans' : 'Generate and track challans' %></span>
     </a>
-    <a class="quick-link" href="/search">
-      <span class="qtitle">Search</span>
-      <span class="qdesc">Search violations by vehicle, violator, or date</span>
+    <a class="quick-link" href="/disputes">
+      <span class="qtitle">Disputes</span>
+      <span class="qdesc"><%= user.role === 'violator' ? 'File a dispute on a challan' : 'Review and resolve disputes' %></span>
     </a>
-    <a class="quick-link" href="/reports">
-      <span class="qtitle">Reports</span>
-      <span class="qdesc">View system-wide statistics</span>
-    </a>
+    <% if (user.role === 'admin' || user.role === 'officer') { %>
+      <a class="quick-link" href="/search">
+        <span class="qtitle">Search</span>
+        <span class="qdesc">Search violations by vehicle, violator, or date</span>
+      </a>
+      <a class="quick-link" href="/reports">
+        <span class="qtitle">Reports</span>
+        <span class="qdesc">View system-wide statistics</span>
+      </a>
+    <% } %>
   </div>
 <%- include('partials/footer') %>

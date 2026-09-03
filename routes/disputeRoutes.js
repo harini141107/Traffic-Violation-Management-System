@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
-const { requireLogin } = require('../middleware/auth');
+const { requireLogin, requireRole } = require('../middleware/auth');
 
-// GET all disputes (list view)
+// GET all disputes (list view) — everyone logged in can see this
 router.get('/disputes', requireLogin, async (req, res) => {
   try {
     const [disputes] = await pool.query(`
@@ -24,7 +24,7 @@ router.get('/disputes', requireLogin, async (req, res) => {
   }
 });
 
-// GET file dispute form — only shows challans without an existing dispute
+// GET file dispute form — everyone logged in can see this
 router.get('/disputes/add', requireLogin, async (req, res) => {
   try {
     const [challans] = await pool.query(`
@@ -45,7 +45,7 @@ router.get('/disputes/add', requireLogin, async (req, res) => {
   }
 });
 
-// POST file dispute
+// POST file dispute — everyone logged in can do this
 router.post('/disputes/add', requireLogin, async (req, res) => {
   const { challan_id, reason } = req.body;
   try {
@@ -60,8 +60,8 @@ router.post('/disputes/add', requireLogin, async (req, res) => {
   }
 });
 
-// POST resolve dispute (Upheld or Dismissed)
-router.post('/disputes/resolve/:id', requireLogin, async (req, res) => {
+// POST resolve dispute — admin/officer only
+router.post('/disputes/resolve/:id', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
   const { status, resolution_note } = req.body;
   try {
     await pool.query(
