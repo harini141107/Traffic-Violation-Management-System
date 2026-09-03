@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
-const { requireLogin } = require('../middleware/auth');
+const { requireLogin, requireRole } = require('../middleware/auth');
 
-// GET all violators (list view)
-router.get('/violators', requireLogin, async (req, res) => {
+router.get('/violators', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
   try {
     const [violators] = await pool.query('SELECT * FROM violators ORDER BY created_at DESC');
     res.render('violators', { violators, user: req.session.user, error: null });
@@ -14,13 +13,11 @@ router.get('/violators', requireLogin, async (req, res) => {
   }
 });
 
-// GET add violator form
-router.get('/violators/add', requireLogin, (req, res) => {
+router.get('/violators/add', requireLogin, requireRole(['admin', 'officer']), (req, res) => {
   res.render('violator-form', { user: req.session.user, violator: null, error: null, mode: 'add' });
 });
 
-// POST add violator
-router.post('/violators/add', requireLogin, async (req, res) => {
+router.post('/violators/add', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
   const { name, license_no, phone, address } = req.body;
   try {
     await pool.query(
@@ -39,8 +36,7 @@ router.post('/violators/add', requireLogin, async (req, res) => {
   }
 });
 
-// GET edit violator form
-router.get('/violators/edit/:id', requireLogin, async (req, res) => {
+router.get('/violators/edit/:id', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM violators WHERE violator_id = ?', [req.params.id]);
     if (rows.length === 0) return res.redirect('/violators');
@@ -51,8 +47,7 @@ router.get('/violators/edit/:id', requireLogin, async (req, res) => {
   }
 });
 
-// POST update violator
-router.post('/violators/edit/:id', requireLogin, async (req, res) => {
+router.post('/violators/edit/:id', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
   const { name, license_no, phone, address } = req.body;
   try {
     await pool.query(
@@ -71,8 +66,7 @@ router.post('/violators/edit/:id', requireLogin, async (req, res) => {
   }
 });
 
-// POST delete violator
-router.post('/violators/delete/:id', requireLogin, async (req, res) => {
+router.post('/violators/delete/:id', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
   try {
     await pool.query('DELETE FROM violators WHERE violator_id = ?', [req.params.id]);
     res.redirect('/violators');

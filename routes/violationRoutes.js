@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
-const { requireLogin } = require('../middleware/auth');
+const { requireLogin, requireRole } = require('../middleware/auth');
 
 const VIOLATION_TYPES = [
   'Signal Jumping', 'No Helmet', 'Triple Riding', 'Wrong Side Driving',
@@ -21,8 +21,7 @@ const DEMERIT_POINTS = {
 
 const DEMERIT_THRESHOLD = 12;
 
-// GET all violations (list view)
-router.get('/violations', requireLogin, async (req, res) => {
+router.get('/violations', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
   try {
     const [violations] = await pool.query(`
       SELECT v.violation_id, v.violation_type, v.location, v.violation_date,
@@ -39,8 +38,7 @@ router.get('/violations', requireLogin, async (req, res) => {
   }
 });
 
-// GET add violation form
-router.get('/violations/add', requireLogin, async (req, res) => {
+router.get('/violations/add', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
   try {
     const [vehicles] = await pool.query('SELECT vehicle_id, registration_no FROM vehicles ORDER BY registration_no');
     const [violators] = await pool.query('SELECT violator_id, name, license_no FROM violators ORDER BY name');
@@ -54,8 +52,7 @@ router.get('/violations/add', requireLogin, async (req, res) => {
   }
 });
 
-// POST add violation — now also assigns demerit points and checks escalation
-router.post('/violations/add', requireLogin, async (req, res) => {
+router.post('/violations/add', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
   const { vehicle_id, violator_id, violation_type, location, violation_date } = req.body;
   const connection = await pool.getConnection();
   try {
@@ -95,8 +92,7 @@ router.post('/violations/add', requireLogin, async (req, res) => {
   }
 });
 
-// GET edit violation form
-router.get('/violations/edit/:id', requireLogin, async (req, res) => {
+router.get('/violations/edit/:id', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM violations WHERE violation_id = ?', [req.params.id]);
     if (rows.length === 0) return res.redirect('/violations');
@@ -112,8 +108,7 @@ router.get('/violations/edit/:id', requireLogin, async (req, res) => {
   }
 });
 
-// POST update violation (does not re-adjust demerit points, to keep this simple)
-router.post('/violations/edit/:id', requireLogin, async (req, res) => {
+router.post('/violations/edit/:id', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
   const { vehicle_id, violator_id, violation_type, location, violation_date } = req.body;
   try {
     await pool.query(
@@ -127,8 +122,7 @@ router.post('/violations/edit/:id', requireLogin, async (req, res) => {
   }
 });
 
-// POST delete violation
-router.post('/violations/delete/:id', requireLogin, async (req, res) => {
+router.post('/violations/delete/:id', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
   try {
     await pool.query('DELETE FROM violations WHERE violation_id = ?', [req.params.id]);
     res.redirect('/violations');
