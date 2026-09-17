@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
-const { requireLogin } = require('../middleware/auth');
+const { requireLogin, requireRole } = require('../middleware/auth');
 
-router.get('/payments/pay/:challanId', requireLogin, async (req, res) => {
+router.get('/payments/pay/:challanId', requireLogin, requireRole(['violator']), async (req, res) => {
   try {
     const [rows] = await pool.query(`
       SELECT c.challan_id, c.fine_amount, c.status,
@@ -29,7 +29,7 @@ router.get('/payments/pay/:challanId', requireLogin, async (req, res) => {
   }
 });
 
-router.post('/payments/pay/:challanId', requireLogin, async (req, res) => {
+router.post('/payments/pay/:challanId', requireLogin, requireRole(['violator']), async (req, res) => {
   const { amount_paid, payment_mode } = req.body;
   const challanId = req.params.challanId;
 
@@ -58,7 +58,7 @@ router.post('/payments/pay/:challanId', requireLogin, async (req, res) => {
   }
 });
 
-router.get('/payments/receipt/:challanId', requireLogin, async (req, res) => {
+router.get('/payments/receipt/:challanId', requireLogin, requireRole(['admin', 'violator']), async (req, res) => {
   try {
     const [rows] = await pool.query(`
       SELECT p.amount_paid, p.payment_mode, p.payment_date,

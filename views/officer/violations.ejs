@@ -1,0 +1,9 @@
+<%- include('../partials/header', { pageTitle: 'Officer Violations', active: 'violations' }) %>
+<div class="page-head"><h1>Violations</h1><p class="page-sub">Operational view of recorded traffic violations.</p></div>
+<div class="panel">
+  <form class="filter-row" action="/officer/violations" method="GET"><div><label>Search</label><input name="search" value="<%= filters.search %>" placeholder="Vehicle, licence, violator, ID, location"></div><div><label>Type</label><select name="violation_type"><option value="">All types</option><% types.forEach(t => { %><option value="<%= t %>" <%= filters.violation_type === t ? 'selected' : '' %>><%= t %></option><% }) %></select></div><div><label>From</label><input type="date" name="from_date" value="<%= filters.from_date %>"></div><div><label>To</label><input type="date" name="to_date" value="<%= filters.to_date %>"></div><div><button type="submit">Filter</button></div></form>
+</div>
+<div class="panel"><div class="section-heading"><h3>Recorded Violations (<%= violations.length %>)</h3><a class="button-link" href="/officer/violations/add">+ Record Violation</a></div><div class="table-scroll"><table><thead><tr><th>ID</th><th>Vehicle</th><th>Violator</th><th>Licence</th><th>Type</th><th>Location</th><th>Date</th><th>Challan</th></tr></thead><tbody>
+<% if (!violations.length) { %><tr><td colspan="8">No matching violations found.</td></tr><% } %><% violations.forEach(v => { %><tr><td><a href="/officer/violations/<%= v.violation_id %>">#<%= v.violation_id %></a></td><td><%= v.registration_no %></td><td><%= v.violator_name %></td><td><%= v.license_no %></td><td><%= v.violation_type %></td><td><%= v.location %></td><td><%= new Date(v.violation_date).toLocaleString() %></td><td><%= v.challan_id ? '#' + v.challan_id : 'Not generated' %></td></tr><% }) %>
+</tbody></table></div></div>
+<%- include('../partials/footer') %>

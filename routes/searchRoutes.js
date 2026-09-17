@@ -3,7 +3,7 @@ const router = express.Router();
 const pool = require('../config/db');
 const { requireLogin, requireRole } = require('../middleware/auth');
 
-router.get('/search', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
+router.get('/search', requireLogin, requireRole(['admin']), async (req, res) => {
   const { registration_no, violator_name, violation_type, from_date, to_date } = req.query;
 
   let query = `

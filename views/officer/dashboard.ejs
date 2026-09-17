@@ -1,0 +1,50 @@
+<%- include('../partials/header', { pageTitle: 'Officer Dashboard', active: 'dashboard' }) %>
+<div class="officer-dashboard">
+  <div class="page-head officer-hero">
+    <div><h1>Officer Dashboard</h1><p class="page-sub">Traffic operations workspace for <%= user.username %></p></div>
+    <span class="officer-badge">Traffic Operations</span>
+  </div>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+
+  <div class="officer-stat-grid">
+    <div class="officer-stat"><div class="label">Violations Recorded</div><div class="value"><%= stats.violationsRecorded %></div></div>
+    <div class="officer-stat"><div class="label">Challans Generated</div><div class="value"><%= stats.challansGenerated %></div></div>
+    <div class="officer-stat"><div class="label">Pending Challans</div><div class="value"><%= stats.pendingChallans %></div></div>
+    <div class="officer-stat"><div class="label">Pending Disputes</div><div class="value"><%= stats.pendingDisputes %></div></div>
+  </div>
+
+  <div class="officer-actions">
+    <a class="officer-action" href="/officer/violations/add"><strong>+ Record Violation</strong><span>Capture a new traffic violation</span></a>
+    <a class="officer-action" href="/officer/vehicles"><strong>Verify Vehicle</strong><span>Check vehicle and enforcement history</span></a>
+    <a class="officer-action" href="/officer/violators"><strong>Verify Violator</strong><span>Check licence and previous records</span></a>
+    <a class="officer-action" href="/officer/challans/add"><strong>Generate Challan</strong><span>Create a challan for an unchallaned violation</span></a>
+  </div>
+
+  <div class="officer-panel-grid">
+    <section class="panel"><div class="section-heading"><h3>Recent Violations</h3><a href="/officer/violations">View all</a></div>
+      <div class="table-scroll"><table><thead><tr><th>Vehicle</th><th>Violator</th><th>Type</th><th>Date</th></tr></thead><tbody>
+        <% if (!recentViolations.length) { %><tr><td colspan="4">No violations recorded.</td></tr><% } %>
+        <% recentViolations.forEach(v => { %><tr><td><a href="/officer/violations/<%= v.violation_id %>"><%= v.registration_no %></a></td><td><%= v.violator_name %></td><td><%= v.violation_type %></td><td><%= new Date(v.violation_date).toLocaleString() %></td></tr><% }) %>
+      </tbody></table></div>
+    </section>
+    <section class="panel"><div class="section-heading"><h3>Recent Challans</h3><a href="/officer/challans">View all</a></div>
+      <div class="table-scroll"><table><thead><tr><th>ID</th><th>Vehicle</th><th>Fine</th><th>Status</th></tr></thead><tbody>
+        <% if (!recentChallans.length) { %><tr><td colspan="4">No challans generated.</td></tr><% } %>
+        <% recentChallans.forEach(c => { %><tr><td><a href="/officer/challans/<%= c.challan_id %>">#<%= c.challan_id %></a></td><td><%= c.registration_no %></td><td>₹<%= Number(c.fine_amount).toFixed(2) %></td><td><span class="badge <%= c.status === 'Paid' ? 'badge-paid' : 'badge-unpaid' %>"><%= c.status %></span></td></tr><% }) %>
+      </tbody></table></div>
+    </section>
+    <section class="panel"><div class="section-heading"><h3>Pending Challans</h3><a href="/officer/challans?status=Unpaid">View all</a></div>
+      <div class="table-scroll"><table><thead><tr><th>ID</th><th>Violator</th><th>Due</th><th>Fine</th></tr></thead><tbody>
+        <% if (!pendingChallanRows.length) { %><tr><td colspan="4">No pending challans.</td></tr><% } %>
+        <% pendingChallanRows.forEach(c => { %><tr><td>#<%= c.challan_id %></td><td><%= c.violator_name %></td><td><%= new Date(c.due_date).toLocaleDateString() %></td><td>₹<%= Number(c.fine_amount).toFixed(2) %></td></tr><% }) %>
+      </tbody></table></div>
+    </section>
+    <section class="panel"><div class="section-heading"><h3>Relevant Disputes</h3><a href="/officer/disputes">View all</a></div>
+      <div class="table-scroll"><table><thead><tr><th>Challan</th><th>Violator</th><th>Status</th></tr></thead><tbody>
+        <% if (!recentDisputes.length) { %><tr><td colspan="3">No disputes found.</td></tr><% } %>
+        <% recentDisputes.forEach(d => { %><tr><td>#<%= d.challan_id %></td><td><%= d.violator_name %></td><td><span class="badge <%= d.status === 'Pending' ? 'badge-pending' : 'badge-neutral' %>"><%= d.status %></span></td></tr><% }) %>
+      </tbody></table></div>
+    </section>
+  </div>
+</div>
+<%- include('../partials/footer') %>

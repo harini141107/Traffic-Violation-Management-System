@@ -1,0 +1,5 @@
+<%- include('../partials/header', { pageTitle: 'Verify Vehicle', active: 'vehicles' }) %>
+<div class="page-head"><h1>Verify Vehicle</h1><p class="page-sub">Search a registration number and inspect its enforcement history.</p></div>
+<div class="panel"><form class="filter-row" action="/officer/vehicles" method="GET"><div><label>Vehicle Number</label><input name="search" value="<%= filters.search %>" placeholder="Enter registration number" required></div><div><button type="submit">Search</button></div></form></div>
+<div class="panel"><div class="table-scroll"><table><thead><tr><th>Registration</th><th>Owner</th><th>Type</th><th>Model</th><th>Action</th></tr></thead><tbody><% if (!vehicles.length) { %><tr><td colspan="5"><%= filters.search ? 'No vehicle found.' : 'Search for a vehicle to begin verification.' %></td></tr><% } %><% vehicles.forEach(v => { %><tr><td><%= v.registration_no %></td><td><%= v.owner_name %></td><td><%= v.vehicle_type %></td><td><%= v.model || '—' %></td><td><a href="/officer/vehicles/<%= v.vehicle_id %>">View verification</a></td></tr><% }) %></tbody></table></div></div>
+<%- include('../partials/footer') %>

@@ -5,6 +5,7 @@ const { requireLogin } = require('../middleware/auth');
 
 router.get('/dashboard', requireLogin, async (req, res) => {
   const user = req.session.user;
+  if (user.role === 'officer') return res.redirect('/officer/dashboard');
   const empty = {
     totalVehicles: 0, totalViolators: 0, totalViolations: 0,
     totalChallans: 0, pendingChallans: 0, paidChallans: 0,

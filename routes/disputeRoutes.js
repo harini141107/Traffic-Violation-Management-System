@@ -4,7 +4,7 @@ const pool = require('../config/db');
 const { requireLogin, requireRole } = require('../middleware/auth');
 
 // GET all disputes — Violators see only their own
-router.get('/disputes', requireLogin, async (req, res) => {
+router.get('/disputes', requireLogin, requireRole(['admin', 'violator']), async (req, res) => {
   try {
     let query = `
       SELECT d.dispute_id, d.reason, d.status, d.filed_date, d.resolution_note,
@@ -34,7 +34,7 @@ router.get('/disputes', requireLogin, async (req, res) => {
 });
 
 // GET file dispute form — Violators only see their own eligible challans
-router.get('/disputes/add', requireLogin, async (req, res) => {
+router.get('/disputes/add', requireLogin, requireRole(['violator']), async (req, res) => {
   try {
     let query = `
       SELECT c.challan_id, c.fine_amount, v.violation_type, v.violator_id,
@@ -64,7 +64,7 @@ router.get('/disputes/add', requireLogin, async (req, res) => {
 });
 
 // POST file dispute — with ownership check for Violators
-router.post('/disputes/add', requireLogin, async (req, res) => {
+router.post('/disputes/add', requireLogin, requireRole(['violator']), async (req, res) => {
   const { challan_id, reason } = req.body;
   try {
     if (req.session.user.role === 'violator') {
@@ -91,7 +91,7 @@ router.post('/disputes/add', requireLogin, async (req, res) => {
 });
 
 // POST resolve dispute — admin/officer only
-router.post('/disputes/resolve/:id', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
+router.post('/disputes/resolve/:id', requireLogin, requireRole(['admin']), async (req, res) => {
   const { status, resolution_note } = req.body;
   try {
     await pool.query(

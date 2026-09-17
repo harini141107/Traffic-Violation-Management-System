@@ -1,0 +1,15 @@
+<%- include('../partials/header', { pageTitle: 'Record Violation', active: 'record' }) %>
+<div class="page-head"><h1>Record Traffic Violation</h1><p class="page-sub">Create a new enforcement record using existing vehicle and violator data.</p></div>
+<div class="panel officer-form-panel">
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <form action="/officer/violations/add" method="POST">
+    <label>Vehicle</label><select name="vehicle_id" required><option value="">-- Select Vehicle --</option><% vehicles.forEach(v => { %><option value="<%= v.vehicle_id %>" <%= String(violation && violation.vehicle_id) === String(v.vehicle_id) ? 'selected' : '' %>><%= v.registration_no %> — <%= v.owner_name %></option><% }) %></select>
+    <label>Violator</label><select name="violator_id" required><option value="">-- Select Violator --</option><% violators.forEach(v => { %><option value="<%= v.violator_id %>" <%= String(violation && violation.violator_id) === String(v.violator_id) ? 'selected' : '' %>><%= v.name %> — Licence <%= v.license_no %></option><% }) %></select>
+    <label>Violation Type</label><select name="violation_type" required><option value="">-- Select Type --</option><% types.forEach(t => { %><option value="<%= t %>" <%= violation && violation.violation_type === t ? 'selected' : '' %>><%= t %></option><% }) %></select>
+    <label>Location</label><input type="text" name="location" maxlength="255" value="<%= violation ? (violation.location || '') : '' %>" required>
+    <label>Date &amp; Time</label><input type="datetime-local" name="violation_date" value="<%= violation && violation.violation_date ? String(violation.violation_date).slice(0,16) : '' %>" required>
+    <p class="form-note">The fine amount is applied when the challan is generated using the system's existing violation-type fine rules.</p>
+    <button type="submit">Record Violation</button>
+  </form>
+</div>
+<%- include('../partials/footer') %>

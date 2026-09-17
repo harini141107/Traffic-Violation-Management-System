@@ -21,7 +21,7 @@ const DEMERIT_POINTS = {
 
 const DEMERIT_THRESHOLD = 12;
 
-router.get('/violations', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
+router.get('/violations', requireLogin, requireRole(['admin']), async (req, res) => {
   try {
     const [violations] = await pool.query(`
       SELECT v.violation_id, v.violation_type, v.location, v.violation_date,
@@ -38,7 +38,7 @@ router.get('/violations', requireLogin, requireRole(['admin', 'officer']), async
   }
 });
 
-router.get('/violations/add', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
+router.get('/violations/add', requireLogin, requireRole(['admin']), async (req, res) => {
   try {
     const [vehicles] = await pool.query('SELECT vehicle_id, registration_no FROM vehicles ORDER BY registration_no');
     const [violators] = await pool.query('SELECT violator_id, name, license_no FROM violators ORDER BY name');
@@ -52,7 +52,7 @@ router.get('/violations/add', requireLogin, requireRole(['admin', 'officer']), a
   }
 });
 
-router.post('/violations/add', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
+router.post('/violations/add', requireLogin, requireRole(['admin']), async (req, res) => {
   const { vehicle_id, violator_id, violation_type, location, violation_date } = req.body;
   const connection = await pool.getConnection();
   try {
@@ -92,7 +92,7 @@ router.post('/violations/add', requireLogin, requireRole(['admin', 'officer']), 
   }
 });
 
-router.get('/violations/edit/:id', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
+router.get('/violations/edit/:id', requireLogin, requireRole(['admin']), async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM violations WHERE violation_id = ?', [req.params.id]);
     if (rows.length === 0) return res.redirect('/violations');
@@ -108,7 +108,7 @@ router.get('/violations/edit/:id', requireLogin, requireRole(['admin', 'officer'
   }
 });
 
-router.post('/violations/edit/:id', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
+router.post('/violations/edit/:id', requireLogin, requireRole(['admin']), async (req, res) => {
   const { vehicle_id, violator_id, violation_type, location, violation_date } = req.body;
   const connection = await pool.getConnection();
   try {
@@ -175,7 +175,7 @@ router.post('/violations/edit/:id', requireLogin, requireRole(['admin', 'officer
   }
 });
 
-router.post('/violations/delete/:id', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
+router.post('/violations/delete/:id', requireLogin, requireRole(['admin']), async (req, res) => {
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();

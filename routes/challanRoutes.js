@@ -16,7 +16,7 @@ const FINE_RATES = {
 };
 
 // GET all challans (list view) — everyone logged in can see this
-router.get('/challans', requireLogin, async (req, res) => {
+router.get('/challans', requireLogin, requireRole(['admin', 'violator']), async (req, res) => {
   try {
     let query = `
       SELECT c.challan_id, c.fine_amount, c.status, c.due_date,
@@ -44,7 +44,7 @@ router.get('/challans', requireLogin, async (req, res) => {
   }
 });
 // GET generate challan form — admin/officer only
-router.get('/challans/add', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
+router.get('/challans/add', requireLogin, requireRole(['admin']), async (req, res) => {
   try {
     const [violations] = await pool.query(`
       SELECT v.violation_id, v.violation_type, v.location, v.violation_date,
@@ -64,7 +64,7 @@ router.get('/challans/add', requireLogin, requireRole(['admin', 'officer']), asy
 });
 
 // POST generate challan — admin/officer only
-router.post('/challans/add', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
+router.post('/challans/add', requireLogin, requireRole(['admin']), async (req, res) => {
   const { violation_id, due_date } = req.body;
   try {
     const [rows] = await pool.query('SELECT violation_type FROM violations WHERE violation_id = ?', [violation_id]);
@@ -84,7 +84,7 @@ router.post('/challans/add', requireLogin, requireRole(['admin', 'officer']), as
 });
 
 // POST delete challan — admin/officer only
-router.post('/challans/delete/:id', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
+router.post('/challans/delete/:id', requireLogin, requireRole(['admin']), async (req, res) => {
   try {
     await pool.query('DELETE FROM challans WHERE challan_id = ?', [req.params.id]);
     res.redirect('/challans');

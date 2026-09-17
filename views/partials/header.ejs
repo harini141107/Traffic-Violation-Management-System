@@ -24,17 +24,30 @@
   </header>
   <div class="app-shell">
         <nav class="sidebar">
-      <a href="/dashboard" class="<%= typeof active !== 'undefined' && active === 'dashboard' ? 'active' : '' %>">Dashboard</a>
-      <% if (user.role === 'admin' || user.role === 'officer') { %>
-        <a href="/vehicles" class="<%= typeof active !== 'undefined' && active === 'vehicles' ? 'active' : '' %>">Vehicles</a>
+      <a href="<%= user.role === 'admin' ? '/admin/dashboard' : user.role === 'officer' ? '/officer/dashboard' : '/dashboard' %>" class="<%= typeof active !== 'undefined' && active === 'dashboard' ? 'active' : '' %>">Dashboard</a>
+      <% if (user.role === 'admin') { %>
+        <div class="nav-section">System Management</div>
+        <a href="/admin/users">User Management</a>
+        <a href="/admin/officers">Officer Management</a>
         <a href="/violators" class="<%= typeof active !== 'undefined' && active === 'violators' ? 'active' : '' %>">Violators</a>
+        <a href="/vehicles" class="<%= typeof active !== 'undefined' && active === 'vehicles' ? 'active' : '' %>">Vehicles</a>
         <a href="/violations" class="<%= typeof active !== 'undefined' && active === 'violations' ? 'active' : '' %>">Violations</a>
-      <% } %>
-      <a href="/challans" class="<%= typeof active !== 'undefined' && active === 'challans' ? 'active' : '' %>">Challans</a>
-      <a href="/disputes" class="<%= typeof active !== 'undefined' && active === 'disputes' ? 'active' : '' %>">Disputes</a>
-      <% if (user.role === 'admin' || user.role === 'officer') { %>
-        <a href="/search" class="<%= typeof active !== 'undefined' && active === 'search' ? 'active' : '' %>">Search</a>
-        <a href="/reports" class="<%= typeof active !== 'undefined' && active === 'reports' ? 'active' : '' %>">Reports</a>
+        <a href="/admin/challans" class="<%= typeof active !== 'undefined' && active === 'challans' ? 'active' : '' %>">Challans</a>
+        <a href="/admin/disputes" class="<%= typeof active !== 'undefined' && active === 'disputes' ? 'active' : '' %>">Disputes</a>
+        <a href="/admin/search" class="<%= typeof active !== 'undefined' && active === 'search' ? 'active' : '' %>">System Search</a>
+        <a href="/admin/reports" class="<%= typeof active !== 'undefined' && active === 'reports' ? 'active' : '' %>">Reports &amp; Analytics</a>
+      <% } else if (user.role === 'officer') { %>
+        <div class="nav-section">Traffic Operations</div>
+        <a href="/officer/violations/add" class="<%= typeof active !== 'undefined' && active === 'record' ? 'active' : '' %>">Record Violation</a>
+        <a href="/officer/vehicles" class="<%= typeof active !== 'undefined' && active === 'vehicles' ? 'active' : '' %>">Verify Vehicle</a>
+        <a href="/officer/violators" class="<%= typeof active !== 'undefined' && active === 'violators' ? 'active' : '' %>">Verify Violator</a>
+        <a href="/officer/violations" class="<%= typeof active !== 'undefined' && active === 'violations' ? 'active' : '' %>">Violations</a>
+        <a href="/officer/challans" class="<%= typeof active !== 'undefined' && active === 'challans' ? 'active' : '' %>">Challans</a>
+        <a href="/officer/disputes" class="<%= typeof active !== 'undefined' && active === 'disputes' ? 'active' : '' %>">Disputes</a>
+        <a href="/officer/search" class="<%= typeof active !== 'undefined' && active === 'search' ? 'active' : '' %>">Search</a>
+      <% } else { %>
+        <a href="/challans" class="<%= typeof active !== 'undefined' && active === 'challans' ? 'active' : '' %>">Challans</a>
+        <a href="/disputes" class="<%= typeof active !== 'undefined' && active === 'disputes' ? 'active' : '' %>">Disputes</a>
       <% } %>
     </nav>
     <main class="main">

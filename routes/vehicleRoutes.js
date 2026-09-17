@@ -3,7 +3,7 @@ const router = express.Router();
 const pool = require('../config/db');
 const { requireLogin, requireRole } = require('../middleware/auth');
 
-router.get('/vehicles', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
+router.get('/vehicles', requireLogin, requireRole(['admin']), async (req, res) => {
   try {
     const [vehicles] = await pool.query('SELECT * FROM vehicles ORDER BY created_at DESC');
     res.render('vehicles', { vehicles, user: req.session.user, error: null });
@@ -13,11 +13,11 @@ router.get('/vehicles', requireLogin, requireRole(['admin', 'officer']), async (
   }
 });
 
-router.get('/vehicles/add', requireLogin, requireRole(['admin', 'officer']), (req, res) => {
+router.get('/vehicles/add', requireLogin, requireRole(['admin']), (req, res) => {
   res.render('vehicle-form', { user: req.session.user, vehicle: null, error: null, mode: 'add' });
 });
 
-router.post('/vehicles/add', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
+router.post('/vehicles/add', requireLogin, requireRole(['admin']), async (req, res) => {
   const { registration_no, owner_name, vehicle_type, model } = req.body;
   try {
     await pool.query(
@@ -36,7 +36,7 @@ router.post('/vehicles/add', requireLogin, requireRole(['admin', 'officer']), as
   }
 });
 
-router.get('/vehicles/edit/:id', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
+router.get('/vehicles/edit/:id', requireLogin, requireRole(['admin']), async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM vehicles WHERE vehicle_id = ?', [req.params.id]);
     if (rows.length === 0) return res.redirect('/vehicles');
@@ -47,7 +47,7 @@ router.get('/vehicles/edit/:id', requireLogin, requireRole(['admin', 'officer'])
   }
 });
 
-router.post('/vehicles/edit/:id', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
+router.post('/vehicles/edit/:id', requireLogin, requireRole(['admin']), async (req, res) => {
   const { registration_no, owner_name, vehicle_type, model } = req.body;
   try {
     await pool.query(
@@ -66,7 +66,7 @@ router.post('/vehicles/edit/:id', requireLogin, requireRole(['admin', 'officer']
   }
 });
 
-router.post('/vehicles/delete/:id', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
+router.post('/vehicles/delete/:id', requireLogin, requireRole(['admin']), async (req, res) => {
   try {
     await pool.query('DELETE FROM vehicles WHERE vehicle_id = ?', [req.params.id]);
     res.redirect('/vehicles');

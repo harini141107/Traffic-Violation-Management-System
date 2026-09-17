@@ -231,3 +231,70 @@ body.legacy { display: flex; align-items: center; justify-content: center; }
 /* Dashboard statistics */
 .stat-card { text-align: center; margin-bottom: 0; min-width: 150px; }
 .stat-value { font-size: 1.65rem; font-weight: 700; color: var(--navy-950); margin-bottom: .25rem; }
+
+
+/* Administrator workspace */
+.admin-dashboard .admin-hero {
+  display:flex; justify-content:space-between; align-items:flex-end; gap:1rem;
+  margin-bottom:1.25rem;
+}
+.admin-dashboard .admin-hero h1 { margin-bottom:.25rem; }
+.admin-badge { display:inline-block; padding:.35rem .65rem; border:1px solid #222; font-size:.75rem; text-transform:uppercase; letter-spacing:.08em; }
+.admin-stat-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:.8rem; margin-bottom:1rem; }
+.admin-stat { padding:1rem; border:1px solid #d9d9d9; background:#fff; }
+.admin-stat .label { font-size:.72rem; text-transform:uppercase; letter-spacing:.07em; color:#666; }
+.admin-stat .value { font-family:Oswald,sans-serif; font-size:1.9rem; margin-top:.25rem; }
+.admin-stat .sub { font-size:.75rem; color:#777; margin-top:.2rem; }
+.admin-panel-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; margin-top:1rem; }
+.admin-panel { background:#fff; border:1px solid #ddd; padding:1rem; }
+.admin-panel h3 { margin-top:0; }
+.admin-bar { display:flex; height:18px; margin:.6rem 0; border:1px solid #ddd; }
+.admin-bar span { background:#222; min-width:2px; }
+.admin-bar span:nth-child(2n) { background:#777; }
+.admin-actions { display:flex; flex-wrap:wrap; gap:.5rem; margin-bottom:1rem; }
+.admin-actions a { text-decoration:none; }
+.admin-table-wrap { overflow:auto; }
+.admin-filter { display:flex; flex-wrap:wrap; gap:.65rem; align-items:end; margin-bottom:1rem; }
+.admin-filter .field { min-width:160px; flex:1; }
+.admin-filter input, .admin-filter select { width:100%; }
+.nav-section { margin:.9rem 1rem .35rem; font-size:.68rem; text-transform:uppercase; letter-spacing:.1em; color:#888; }
+.detail-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.8rem; }
+.detail-item { border:1px solid #ddd; padding:.8rem; background:#fff; }
+.detail-item .label { font-size:.7rem; text-transform:uppercase; color:#777; }
+.detail-item .value { margin-top:.2rem; font-weight:600; }
+@media (max-width: 1100px) { .admin-stat-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+@media (max-width: 750px) { .admin-stat-grid,.admin-panel-grid,.detail-grid { grid-template-columns:1fr 1fr; } }
+@media (max-width: 520px) { .admin-stat-grid,.admin-panel-grid,.detail-grid { grid-template-columns:1fr; } }
+
+/* ---------- Traffic Officer workspace ---------- */
+.officer-dashboard .officer-hero { display:flex; justify-content:space-between; align-items:flex-end; gap:1rem; }
+.officer-badge { display:inline-block; padding:.35rem .65rem; border:1px solid #222; font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; }
+.officer-stat-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.8rem; margin-bottom:1rem; }
+.officer-stat { background:#fff; border:1px solid var(--line); padding:1rem 1.1rem; border-left:4px solid var(--navy-950); }
+.officer-stat .label { font-size:.72rem; text-transform:uppercase; letter-spacing:.07em; color:#666; }
+.officer-stat .value { font-family:Oswald,sans-serif; font-size:1.9rem; margin-top:.25rem; }
+.officer-actions { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.8rem; margin-bottom:1rem; }
+.officer-action { background:#fff; border:1px solid var(--line); border-radius:10px; padding:1rem; text-decoration:none; color:var(--ink); }
+.officer-action:hover { border-color:var(--accent); }
+.officer-action strong { display:block; margin-bottom:.25rem; }
+.officer-action span { font-size:.82rem; color:var(--ink-soft); }
+.officer-panel-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; }
+.section-heading { display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:.8rem; }
+.section-heading h3 { margin:0; }
+.section-heading a, .button-link { font-size:.85rem; }
+.table-scroll { overflow:auto; }
+.filter-row { display:flex; flex-wrap:wrap; align-items:flex-end; gap:.75rem; }
+.filter-row > div { flex:1; min-width:180px; }
+.filter-row > div:last-child { flex:0 0 auto; min-width:100px; }
+.filter-row input, .filter-row select { margin-bottom:0; }
+.filter-row button, .inline-form button { width:auto; white-space:nowrap; }
+.officer-form-panel { max-width:620px; }
+.form-note { font-size:.82rem; color:var(--ink-soft); background:#F7F9FC; border-left:3px solid var(--navy-950); padding:.65rem .8rem; margin-bottom:1rem; }
+.officer-detail { margin-bottom:1.5rem; }
+.badge-pending { background:#FDF3E3; color:#B9791F; }
+.badge-neutral { background:#EEF1F7; color:#4E586B; }
+.inline-form { display:flex; gap:.4rem; align-items:center; min-width:250px; }
+.inline-form input { margin:0; min-width:150px; }
+small { color:var(--ink-soft); }
+@media (max-width: 900px) { .officer-stat-grid,.officer-actions,.officer-panel-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width: 520px) { .officer-stat-grid,.officer-actions,.officer-panel-grid { grid-template-columns:1fr; } .officer-dashboard .officer-hero { align-items:flex-start; flex-direction:column; } }

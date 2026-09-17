@@ -3,7 +3,7 @@ const router = express.Router();
 const pool = require('../config/db');
 const { requireLogin, requireRole } = require('../middleware/auth');
 
-router.get('/reports', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
+router.get('/reports', requireLogin, requireRole(['admin']), async (req, res) => {
   try {
     const [[{ totalVehicles }]] = await pool.query('SELECT COUNT(*) AS totalVehicles FROM vehicles');
     const [[{ totalViolators }]] = await pool.query('SELECT COUNT(*) AS totalViolators FROM violators');
