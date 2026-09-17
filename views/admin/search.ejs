@@ -1,0 +1,12 @@
+<%- include('../partials/header', { pageTitle: 'Admin System Search' }) %>
+<div class="page-head"><h1>System-wide Search</h1><p class="page-sub">Search vehicles, licences, violators, violations and challans from one place.</p></div>
+<form class="admin-filter" method="get" action="/admin/search">
+<div class="field"><label>Search term</label><input name="q" value="<%= filters.q %>" placeholder="Vehicle number, licence, name, violation ID, challan ID or type"></div>
+<div class="field"><label>From</label><input type="date" name="from" value="<%= filters.from %>"></div>
+<div class="field"><label>To</label><input type="date" name="to" value="<%= filters.to %>"></div>
+<button class="button">Search</button><a class="button" href="/admin/search">Reset</a></form>
+<% if (error) { %><p class="error"><%= error %></p><% } %>
+<% if (searched) { %><div class="panel admin-table-wrap"><h3>Results: <%= results.length %></h3><table><thead><tr><th>Violation</th><th>Vehicle</th><th>Violator</th><th>Licence</th><th>Type</th><th>Date</th><th>Challan</th><th>Fine</th></tr></thead><tbody>
+<% results.forEach(r => { %><tr><td><a href="/admin/violations/<%= r.violation_id %>">#<%= r.violation_id %></a></td><td><%= r.registration_no %></td><td><%= r.violator_name %></td><td><%= r.license_no %></td><td><%= r.violation_type %></td><td><%= new Date(r.violation_date).toLocaleString() %></td><td><%= r.challan_id ? '#'+r.challan_id+' '+r.challan_status : '—' %></td><td><%= r.fine_amount == null ? '—' : '₹'+Number(r.fine_amount).toFixed(2) %></td></tr><% }) %>
+</tbody></table></div><% } %>
+<%- include('../partials/footer') %>

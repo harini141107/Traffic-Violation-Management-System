@@ -1,4 +1,10 @@
-# Traffic Violation Management System — Starter (Auth + Dashboard)
+# Traffic Violation Management System (TVMS)
+
+## Stack
+- Node.js + Express
+- EJS
+- MySQL
+- bcrypt + express-session
 
 ## Setup
 
@@ -7,32 +13,29 @@
    npm install
    ```
 
-2. Create the database:
-   - Open MySQL and run the contents of `sql/schema.sql`
-     (or: `mysql -u root -p < sql/schema.sql`)
+2. Create a `.env` file using `.env.example` and set your MySQL credentials.
 
-3. Create your `.env` file from the example:
-   ```
-   cp .env.example .env
-   ```
-   Then edit `.env` with your actual MySQL password and a random session secret.
+3. For a **new database**, run `sql/schema.sql`. It creates all TVMS tables in the correct dependency order.
 
-4. Run the app:
+4. If you already have an older version of the TVMS database, run `sql/migration.sql` once to add the newer columns safely.
+
+5. Start the application:
    ```
    npm run dev
    ```
-   (uses nodemon — auto-restarts on file changes)
 
-5. Visit `http://localhost:3000` — you'll be redirected to `/login`.
+6. Open `http://localhost:3000`.
 
-## What's included
-- `/register` — create a user (choose role: admin, officer, violator)
-- `/login` — authenticate, starts a session
-- `/dashboard` — protected route, only accessible when logged in
-- `/logout` — destroys the session
+## Main modules
+- Authentication and role-based access
+- Admin/officer vehicle and violator management
+- Traffic violation recording
+- Automatic demerit-point tracking and licence flagging
+- Challan generation and payment
+- Payment receipts
+- Violator disputes and officer/admin resolution
+- Search and reports
+- Dashboard statistics
 
-## Next steps
-- Add vehicle & violator CRUD routes
-- Add violation recording form
-- Add challan generation logic
-- Add role-based dashboard views (Admin sees different panel than Officer)
+## Important database change
+The `users` table now contains `violator_id`, so a violator login can be linked to exactly one violator record. The complete schema already includes this relationship.

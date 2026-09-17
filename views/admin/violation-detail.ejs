@@ -1,0 +1,14 @@
+<%- include('../partials/header', { pageTitle: 'Violation Record' }) %>
+<div class="page-head"><h1>Violation Record</h1><p class="page-sub">Complete violation and linked challan information.</p></div>
+<div class="detail-grid">
+<div class="detail-item"><div class="label">Violation ID</div><div class="value"><%= violation.violation_id %></div></div>
+<div class="detail-item"><div class="label">Type</div><div class="value"><%= violation.violation_type %></div></div>
+<div class="detail-item"><div class="label">Vehicle</div><div class="value"><%= violation.registration_no %></div></div>
+<div class="detail-item"><div class="label">Violator</div><div class="value"><%= violation.violator_name %> — <%= violation.license_no %></div></div>
+<div class="detail-item"><div class="label">Location</div><div class="value"><%= violation.location %></div></div>
+<div class="detail-item"><div class="label">Date</div><div class="value"><%= new Date(violation.violation_date).toLocaleString() %></div></div>
+<div class="detail-item"><div class="label">Challan</div><div class="value"><%= violation.challan_id || 'Not generated' %></div></div>
+<div class="detail-item"><div class="label">Fine / Status</div><div class="value"><%= violation.fine_amount == null ? '—' : '₹'+Number(violation.fine_amount).toFixed(2) %> / <%= violation.challan_status || '—' %></div></div>
+</div>
+<div class="admin-actions" style="margin-top:1rem;"><a class="button" href="/violations/edit/<%= violation.violation_id %>">Edit Violation</a><a class="button" href="/violations">Back</a></div>
+<%- include('../partials/footer') %>

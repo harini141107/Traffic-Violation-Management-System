@@ -1,0 +1,17 @@
+<%- include('../partials/header', { pageTitle: 'Violator Record' }) %>
+<div class="page-head"><h1>Violator Record</h1><p class="page-sub">Personal, licence, vehicle and history information.</p></div>
+<div class="detail-grid">
+<div class="detail-item"><div class="label">Name</div><div class="value"><%= violator.name %></div></div>
+<div class="detail-item"><div class="label">Licence</div><div class="value"><%= violator.license_no %></div></div>
+<div class="detail-item"><div class="label">Phone</div><div class="value"><%= violator.phone || '—' %></div></div>
+<div class="detail-item"><div class="label">Licence Status</div><div class="value"><%= violator.license_status %></div></div>
+<div class="detail-item"><div class="label">Demerit Points</div><div class="value"><%= violator.demerit_points %></div></div>
+<div class="detail-item"><div class="label">Address</div><div class="value"><%= violator.address || '—' %></div></div>
+</div>
+<div class="panel" style="margin-top:1rem;"><h3>Linked Vehicles</h3><div class="admin-table-wrap"><table><thead><tr><th>Registration</th><th>Owner</th><th>Type</th><th>Model</th><th></th></tr></thead><tbody>
+<% vehicles.forEach(v => { %><tr><td><%= v.registration_no %></td><td><%= v.owner_name %></td><td><%= v.vehicle_type %></td><td><%= v.model || '—' %></td><td><a href="/admin/vehicles/<%= v.vehicle_id %>">View</a></td></tr><% }) %>
+</tbody></table></div></div>
+<div class="panel" style="margin-top:1rem;"><h3>Violation &amp; Challan History</h3><div class="admin-table-wrap"><table><thead><tr><th>Violation</th><th>Vehicle</th><th>Date</th><th>Challan</th><th>Fine</th><th>Status</th></tr></thead><tbody>
+<% history.forEach(h => { %><tr><td><%= h.violation_type %></td><td><%= h.registration_no %></td><td><%= new Date(h.violation_date).toLocaleString() %></td><td><%= h.challan_id || '—' %></td><td><%= h.fine_amount == null ? '—' : '₹'+Number(h.fine_amount).toFixed(2) %></td><td><%= h.status || '—' %></td></tr><% }) %>
+</tbody></table></div></div>
+<%- include('../partials/footer') %>

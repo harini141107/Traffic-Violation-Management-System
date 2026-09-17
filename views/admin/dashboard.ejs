@@ -1,0 +1,83 @@
+<%- include('../partials/header', { pageTitle: 'Admin Dashboard', active: 'dashboard' }) %>
+<div class="admin-dashboard">
+  <div class="admin-hero">
+    <div>
+      <h1>Administration Dashboard</h1>
+      <p class="page-sub">System-wide monitoring, management and control.</p>
+    </div>
+    <span class="admin-badge">Administrator</span>
+  </div>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+
+  <div class="admin-actions">
+    <a class="button" href="/admin/users">Manage Users</a>
+    <a class="button" href="/admin/officers">Manage Officers</a>
+    <a class="button" href="/admin/challans">Monitor Challans</a>
+    <a class="button" href="/admin/disputes">Review Disputes</a>
+    <a class="button" href="/admin/reports">Open Reports</a>
+  </div>
+
+  <div class="admin-stat-grid">
+    <div class="admin-stat"><div class="label">Total Users</div><div class="value"><%= stats.totalUsers %></div></div>
+    <div class="admin-stat"><div class="label">Officers</div><div class="value"><%= stats.totalOfficers %></div></div>
+    <div class="admin-stat"><div class="label">Violators</div><div class="value"><%= stats.totalViolators %></div></div>
+    <div class="admin-stat"><div class="label">Vehicles</div><div class="value"><%= stats.totalVehicles %></div></div>
+    <div class="admin-stat"><div class="label">Violations</div><div class="value"><%= stats.totalViolations %></div></div>
+    <div class="admin-stat"><div class="label">Challans</div><div class="value"><%= stats.totalChallans %></div></div>
+    <div class="admin-stat"><div class="label">Pending Challans</div><div class="value"><%= stats.pendingChallans %></div></div>
+    <div class="admin-stat"><div class="label">Fine Collected</div><div class="value">₹<%= Number(stats.totalCollected || 0).toFixed(2) %></div></div>
+    <div class="admin-stat"><div class="label">Pending Disputes</div><div class="value"><%= stats.pendingDisputes %></div></div>
+    <div class="admin-stat"><div class="label">Resolved Disputes</div><div class="value"><%= stats.resolvedDisputes %></div></div>
+  </div>
+
+  <div class="admin-panel-grid">
+    <section class="admin-panel">
+      <h3>Violations by Type</h3>
+      <% if (byType.length) { byType.forEach(item => { %>
+        <div style="display:flex;justify-content:space-between;margin:.45rem 0;">
+          <span><%= item.violation_type %></span><strong><%= item.count %></strong>
+        </div>
+        <% }); } else { %><p class="page-sub">No violation data.</p><% } %>
+    </section>
+    <section class="admin-panel">
+      <h3>Challan Status</h3>
+      <% if (challanStatus.length) { challanStatus.forEach(item => { %>
+        <div style="display:flex;justify-content:space-between;margin:.45rem 0;">
+          <span><%= item.status %></span><strong><%= item.count %></strong>
+        </div>
+        <% }); } else { %><p class="page-sub">No challan data.</p><% } %>
+    </section>
+    <section class="admin-panel">
+      <h3>Dispute Status</h3>
+      <% if (disputesByStatus.length) { disputesByStatus.forEach(item => { %>
+        <div style="display:flex;justify-content:space-between;margin:.45rem 0;">
+          <span><%= item.status %></span><strong><%= item.count %></strong>
+        </div>
+        <% }); } else { %><p class="page-sub">No dispute data.</p><% } %>
+    </section>
+    <section class="admin-panel">
+      <h3>Officer Activity</h3>
+      <p class="page-sub">The current schema has no officer/user foreign key on violations, so activity cannot be attributed to individual officers without a schema change.</p>
+      <% officerActivity.forEach(item => { %>
+        <div style="display:flex;justify-content:space-between;margin:.45rem 0;">
+          <span><%= item.username %></span><strong>Not attributable</strong>
+        </div>
+      <% }) %>
+    </section>
+  </div>
+
+  <div class="admin-panel" style="margin-top:1rem;">
+    <h3>Recent System Violations</h3>
+    <div class="admin-table-wrap">
+      <table><thead><tr><th>ID</th><th>Vehicle</th><th>Violator</th><th>Type</th><th>Location</th><th>Date</th><th></th></tr></thead>
+      <tbody>
+      <% recentViolations.forEach(v => { %>
+        <tr><td><%= v.violation_id %></td><td><%= v.registration_no %></td><td><%= v.violator_name %></td>
+        <td><%= v.violation_type %></td><td><%= v.location %></td><td><%= new Date(v.violation_date).toLocaleString() %></td>
+        <td><a href="/admin/violations/<%= v.violation_id %>">View</a></td></tr>
+      <% }) %>
+      </tbody></table>
+    </div>
+  </div>
+</div>
+<%- include('../partials/footer') %>

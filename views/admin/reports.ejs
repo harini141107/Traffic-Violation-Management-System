@@ -1,0 +1,20 @@
+<%- include('../partials/header', { pageTitle: 'Admin Reports & Analytics' }) %>
+<div class="page-head"><h1>Reports &amp; Analytics</h1><p class="page-sub">Actual database aggregates for system monitoring.</p></div>
+<div class="admin-stat-grid">
+<div class="admin-stat"><div class="label">Vehicles</div><div class="value"><%= totals.vehicles %></div></div>
+<div class="admin-stat"><div class="label">Violators</div><div class="value"><%= totals.violators %></div></div>
+<div class="admin-stat"><div class="label">Violations</div><div class="value"><%= totals.violations %></div></div>
+<div class="admin-stat"><div class="label">Challans</div><div class="value"><%= totals.challans %></div></div>
+<div class="admin-stat"><div class="label">Collected</div><div class="value">₹<%= Number(totals.collected||0).toFixed(2) %></div></div>
+</div>
+<div class="admin-panel-grid">
+<section class="admin-panel"><h3>Violations by Type</h3><table><thead><tr><th>Type</th><th>Count</th></tr></thead><tbody><% byType.forEach(x=>{ %><tr><td><%= x.violation_type %></td><td><%= x.count %></td></tr><% }) %></tbody></table></section>
+<section class="admin-panel"><h3>Violations Over Time</h3><table><thead><tr><th>Month</th><th>Count</th></tr></thead><tbody><% overTime.forEach(x=>{ %><tr><td><%= x.month %></td><td><%= x.count %></td></tr><% }) %></tbody></table></section>
+<section class="admin-panel"><h3>Fine Collection</h3><table><thead><tr><th>Month</th><th>Collected</th></tr></thead><tbody><% fineCollection.forEach(x=>{ %><tr><td><%= x.month %></td><td>₹<%= Number(x.amount||0).toFixed(2) %></td></tr><% }) %></tbody></table></section>
+<section class="admin-panel"><h3>Paid vs Pending Challans</h3><table><thead><tr><th>Status</th><th>Count</th></tr></thead><tbody><% challanStatus.forEach(x=>{ %><tr><td><%= x.status %></td><td><%= x.count %></td></tr><% }) %></tbody></table></section>
+<section class="admin-panel"><h3>Dispute Statistics</h3><table><thead><tr><th>Status</th><th>Count</th></tr></thead><tbody><% disputeStats.forEach(x=>{ %><tr><td><%= x.status %></td><td><%= x.count %></td></tr><% }) %></tbody></table></section>
+<section class="admin-panel"><h3>Vehicle Statistics</h3><table><thead><tr><th>Vehicle Type</th><th>Count</th></tr></thead><tbody><% vehicleStats.forEach(x=>{ %><tr><td><%= x.vehicle_type %></td><td><%= x.count %></td></tr><% }) %></tbody></table></section>
+<section class="admin-panel"><h3>Violator Statistics</h3><table><thead><tr><th>Licence Status</th><th>Count</th></tr></thead><tbody><% violatorStats.forEach(x=>{ %><tr><td><%= x.license_status %></td><td><%= x.count %></td></tr><% }) %></tbody></table></section>
+<section class="admin-panel"><h3>Dispute Summary</h3><p>Pending: <strong><%= totals.pending_disputes %></strong></p><p>Resolved: <strong><%= totals.resolved_disputes %></strong></p><p>Paid challans: <strong><%= totals.paid_challans %></strong></p><p>Pending challans: <strong><%= totals.pending_challans %></strong></p></section>
+</div>
+<%- include('../partials/footer') %>

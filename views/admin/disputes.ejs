@@ -1,0 +1,7 @@
+<%- include('../partials/header', { pageTitle: 'Admin Disputes' }) %>
+<div class="page-head"><h1>Dispute Management</h1><p class="page-sub">Review and resolve system-wide challan disputes.</p></div>
+<div class="panel admin-table-wrap"><table><thead><tr><th>ID</th><th>Status</th><th>Violator</th><th>Licence</th><th>Vehicle</th><th>Violation</th><th>Challan</th><th>Reason</th><th>Resolution</th></tr></thead><tbody>
+<% disputes.forEach(d => { %><tr><td><%= d.dispute_id %></td><td><%= d.status %></td><td><%= d.violator_name %></td><td><%= d.license_no %></td><td><%= d.registration_no %></td><td><%= d.violation_type %></td><td>#<%= d.challan_id %> / ₹<%= Number(d.fine_amount).toFixed(2) %></td><td><%= d.reason %></td><td>
+<% if (d.status === 'Pending') { %><form method="post" action="/disputes/resolve/<%= d.dispute_id %>"><select name="status" required><option value="Upheld">Upheld</option><option value="Dismissed">Dismissed</option></select><textarea name="resolution_note" required placeholder="Resolution remarks"></textarea><button class="button" type="submit">Resolve</button></form><% } else { %><%= d.resolution_note || '—' %><% } %>
+</td></tr><% }) %></tbody></table></div>
+<%- include('../partials/footer') %>

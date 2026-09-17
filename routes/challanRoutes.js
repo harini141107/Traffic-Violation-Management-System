@@ -18,7 +18,7 @@ const FINE_RATES = {
 // GET all challans (list view) — everyone logged in can see this
 router.get('/challans', requireLogin, async (req, res) => {
   try {
-    const [challans] = await pool.query(`
+    let query = `
       SELECT c.challan_id, c.fine_amount, c.status, c.due_date,
              v.violation_type, v.location, v.violation_date,
              veh.registration_no, vio.name AS violator_name
@@ -26,15 +26,23 @@ router.get('/challans', requireLogin, async (req, res) => {
       JOIN violations v ON c.violation_id = v.violation_id
       JOIN vehicles veh ON v.vehicle_id = veh.vehicle_id
       JOIN violators vio ON v.violator_id = vio.violator_id
-      ORDER BY c.created_at DESC
-    `);
+    `;
+    const params = [];
+
+    if (req.session.user.role === 'violator') {
+      query += ' WHERE v.violator_id = ?';
+      params.push(req.session.user.violator_id);
+    }
+
+    query += ' ORDER BY c.created_at DESC';
+
+    const [challans] = await pool.query(query, params);
     res.render('challans', { challans, user: req.session.user, error: null });
   } catch (err) {
     console.error(err);
     res.render('challans', { challans: [], user: req.session.user, error: 'Could not load challans.' });
   }
 });
-
 // GET generate challan form — admin/officer only
 router.get('/challans/add', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
   try {

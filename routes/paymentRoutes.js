@@ -7,7 +7,7 @@ router.get('/payments/pay/:challanId', requireLogin, async (req, res) => {
   try {
     const [rows] = await pool.query(`
       SELECT c.challan_id, c.fine_amount, c.status,
-             v.violation_type, veh.registration_no, vio.name AS violator_name
+             v.violation_type, v.violator_id, veh.registration_no, vio.name AS violator_name
       FROM challans c
       JOIN violations v ON c.violation_id = v.violation_id
       JOIN vehicles veh ON v.vehicle_id = veh.vehicle_id
@@ -17,6 +17,10 @@ router.get('/payments/pay/:challanId', requireLogin, async (req, res) => {
 
     if (rows.length === 0) return res.redirect('/challans');
     if (rows[0].status === 'Paid') return res.redirect('/challans');
+
+    if (req.session.user.role === 'violator' && rows[0].violator_id !== req.session.user.violator_id) {
+      return res.status(403).send('Access denied. This challan does not belong to your account.');
+    }
 
     res.render('payment-form', { user: req.session.user, challan: rows[0], error: null });
   } catch (err) {

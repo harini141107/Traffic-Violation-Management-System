@@ -1,41 +1,49 @@
 <%- include('partials/header', { pageTitle: 'Dashboard', active: 'dashboard' }) %>
-  <div class="page-head">
-    <h1>Dashboard</h1>
-    <p class="page-sub">Welcome back, <%= user.username %> (<%= user.role %>)</p>
-  </div>
+<div class="page-head">
+  <h1>Dashboard</h1>
+  <p class="page-sub">Welcome back, <%= user.username %> (<%= user.role %>)</p>
+</div>
 
-    <div class="quick-links">
-    <% if (user.role === 'admin' || user.role === 'officer') { %>
-      <a class="quick-link" href="/vehicles">
-        <span class="qtitle">Vehicles</span>
-        <span class="qdesc">Add, edit, and manage registered vehicles</span>
-      </a>
-      <a class="quick-link" href="/violators">
-        <span class="qtitle">Violators</span>
-        <span class="qdesc">Manage violator records</span>
-      </a>
-      <a class="quick-link" href="/violations">
-        <span class="qtitle">Violations</span>
-        <span class="qdesc">Record and view traffic violations</span>
-      </a>
-    <% } %>
-    <a class="quick-link" href="/challans">
-      <span class="qtitle">Challans</span>
-      <span class="qdesc"><%= user.role === 'violator' ? 'View and pay your challans' : 'Generate and track challans' %></span>
-    </a>
-    <a class="quick-link" href="/disputes">
-      <span class="qtitle">Disputes</span>
-      <span class="qdesc"><%= user.role === 'violator' ? 'File a dispute on a challan' : 'Review and resolve disputes' %></span>
-    </a>
-    <% if (user.role === 'admin' || user.role === 'officer') { %>
-      <a class="quick-link" href="/search">
-        <span class="qtitle">Search</span>
-        <span class="qdesc">Search violations by vehicle, violator, or date</span>
-      </a>
-      <a class="quick-link" href="/reports">
-        <span class="qtitle">Reports</span>
-        <span class="qdesc">View system-wide statistics</span>
-      </a>
-    <% } %>
-  </div>
+<% if (typeof error !== 'undefined' && error) { %><p class="error"><%= error %></p><% } %>
+
+<div class="quick-links" style="margin-bottom:1.5rem;">
+  <% if (user.role === 'violator') { %>
+    <div class="panel stat-card"><div class="stat-value"><%= stats.totalViolations %></div><div>My Violations</div></div>
+    <div class="panel stat-card"><div class="stat-value"><%= stats.totalChallans %></div><div>My Challans</div></div>
+    <div class="panel stat-card"><div class="stat-value"><%= stats.pendingChallans %></div><div>Pending Fines</div></div>
+    <div class="panel stat-card"><div class="stat-value">₹<%= Number(stats.totalCollected || 0).toFixed(2) %></div><div>Total Paid</div></div>
+  <% } else { %>
+    <div class="panel stat-card"><div class="stat-value"><%= stats.totalVehicles %></div><div>Vehicles</div></div>
+    <div class="panel stat-card"><div class="stat-value"><%= stats.totalViolators %></div><div>Violators</div></div>
+    <div class="panel stat-card"><div class="stat-value"><%= stats.totalViolations %></div><div>Violations</div></div>
+    <div class="panel stat-card"><div class="stat-value"><%= stats.pendingChallans %></div><div>Pending Challans</div></div>
+    <div class="panel stat-card"><div class="stat-value">₹<%= Number(stats.totalCollected || 0).toFixed(2) %></div><div>Fine Collected</div></div>
+    <div class="panel stat-card"><div class="stat-value"><%= stats.pendingDisputes %></div><div>Pending Disputes</div></div>
+  <% } %>
+</div>
+
+<div class="quick-links">
+  <% if (user.role === 'admin' || user.role === 'officer') { %>
+    <a class="quick-link" href="/vehicles"><span class="qtitle">Vehicles</span><span class="qdesc">Add, edit, and manage registered vehicles</span></a>
+    <a class="quick-link" href="/violators"><span class="qtitle">Violators</span><span class="qdesc">Manage violator records and licence status</span></a>
+    <a class="quick-link" href="/violations"><span class="qtitle">Violations</span><span class="qdesc">Record and manage traffic violations</span></a>
+  <% } %>
+  <a class="quick-link" href="/challans"><span class="qtitle">Challans</span><span class="qdesc"><%= user.role === 'violator' ? 'View and pay your challans' : 'Generate and track challans' %></span></a>
+  <a class="quick-link" href="/disputes"><span class="qtitle">Disputes</span><span class="qdesc"><%= user.role === 'violator' ? 'File and track a dispute' : 'Review and resolve disputes' %></span></a>
+  <% if (user.role === 'admin' || user.role === 'officer') { %>
+    <a class="quick-link" href="/search"><span class="qtitle">Search</span><span class="qdesc">Search violations by vehicle, violator, or date</span></a>
+    <a class="quick-link" href="/reports"><span class="qtitle">Reports</span><span class="qdesc">View system-wide statistics</span></a>
+  <% } %>
+</div>
+
+<% if (stats.recentViolations && stats.recentViolations.length) { %>
+<div class="panel" style="margin-top:1.5rem;">
+  <h3 style="margin-top:0;">Recent Violations</h3>
+  <table><thead><tr><th>Vehicle</th><th>Type</th><th>Location</th><th>Date</th><% if (user.role !== 'violator') { %><th>Violator</th><% } %></tr></thead>
+  <tbody><% stats.recentViolations.forEach(v => { %><tr>
+    <td><%= v.registration_no %></td><td><%= v.violation_type %></td><td><%= v.location %></td><td><%= new Date(v.violation_date).toLocaleString() %></td>
+    <% if (user.role !== 'violator') { %><td><%= v.violator_name %></td><% } %>
+  </tr><% }) %></tbody></table>
+</div>
+<% } %>
 <%- include('partials/footer') %>

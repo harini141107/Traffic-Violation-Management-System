@@ -1,0 +1,12 @@
+<%- include('../partials/header', { pageTitle: 'Vehicle Record' }) %>
+<div class="page-head"><h1>Vehicle Record</h1><p class="page-sub">Owner, violation and challan history.</p></div>
+<div class="detail-grid">
+<div class="detail-item"><div class="label">Registration</div><div class="value"><%= vehicle.registration_no %></div></div>
+<div class="detail-item"><div class="label">Owner</div><div class="value"><%= vehicle.owner_name %></div></div>
+<div class="detail-item"><div class="label">Vehicle Type</div><div class="value"><%= vehicle.vehicle_type %></div></div>
+<div class="detail-item"><div class="label">Model</div><div class="value"><%= vehicle.model || '—' %></div></div>
+</div>
+<div class="panel" style="margin-top:1rem;"><h3>Related Violations &amp; Challans</h3><div class="admin-table-wrap"><table><thead><tr><th>ID</th><th>Type</th><th>Violator</th><th>Date</th><th>Challan</th><th>Fine</th><th>Status</th></tr></thead><tbody>
+<% violations.forEach(v => { %><tr><td><%= v.violation_id %></td><td><%= v.violation_type %></td><td><%= v.violator_name %></td><td><%= new Date(v.violation_date).toLocaleString() %></td><td><%= v.challan_id || '—' %></td><td><%= v.fine_amount == null ? '—' : '₹'+Number(v.fine_amount).toFixed(2) %></td><td><%= v.status || '—' %></td></tr><% }) %>
+</tbody></table></div></div>
+<%- include('../partials/footer') %>

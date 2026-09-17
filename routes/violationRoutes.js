@@ -110,25 +110,102 @@ router.get('/violations/edit/:id', requireLogin, requireRole(['admin', 'officer'
 
 router.post('/violations/edit/:id', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
   const { vehicle_id, violator_id, violation_type, location, violation_date } = req.body;
+  const connection = await pool.getConnection();
   try {
-    await pool.query(
+    await connection.beginTransaction();
+
+    const [oldRows] = await connection.query(
+      'SELECT violator_id, violation_type FROM violations WHERE violation_id = ? FOR UPDATE',
+      [req.params.id]
+    );
+    if (oldRows.length === 0) {
+      await connection.rollback();
+      return res.redirect('/violations');
+    }
+
+    const oldViolation = oldRows[0];
+    const oldPoints = DEMERIT_POINTS[oldViolation.violation_type] || 1;
+    const newPoints = DEMERIT_POINTS[violation_type] || 1;
+
+    await connection.query(
       'UPDATE violations SET vehicle_id = ?, violator_id = ?, violation_type = ?, location = ?, violation_date = ? WHERE violation_id = ?',
       [vehicle_id, violator_id, violation_type, location, violation_date, req.params.id]
     );
+
+    if (Number(oldViolation.violator_id) === Number(violator_id)) {
+      const delta = newPoints - oldPoints;
+      if (delta !== 0) {
+        await connection.query(
+          'UPDATE violators SET demerit_points = GREATEST(0, demerit_points + ?) WHERE violator_id = ?',
+          [delta, violator_id]
+        );
+      }
+    } else {
+      await connection.query(
+        'UPDATE violators SET demerit_points = GREATEST(0, demerit_points - ?) WHERE violator_id = ?',
+        [oldPoints, oldViolation.violator_id]
+      );
+      await connection.query(
+        'UPDATE violators SET demerit_points = demerit_points + ? WHERE violator_id = ?',
+        [newPoints, violator_id]
+      );
+    }
+
+    const affectedIds = [oldViolation.violator_id, violator_id];
+    for (const id of affectedIds) {
+      const [[row]] = await connection.query(
+        'SELECT demerit_points FROM violators WHERE violator_id = ?', [id]
+      );
+      if (row) {
+        await connection.query(
+          "UPDATE violators SET license_status = CASE WHEN demerit_points >= ? THEN 'Flagged for Suspension' ELSE 'Active' END WHERE violator_id = ?",
+          [DEMERIT_THRESHOLD, id]
+        );
+      }
+    }
+
+    await connection.commit();
     res.redirect('/violations');
   } catch (err) {
+    await connection.rollback();
     console.error(err);
     res.redirect('/violations');
+  } finally {
+    connection.release();
   }
 });
 
 router.post('/violations/delete/:id', requireLogin, requireRole(['admin', 'officer']), async (req, res) => {
+  const connection = await pool.getConnection();
   try {
-    await pool.query('DELETE FROM violations WHERE violation_id = ?', [req.params.id]);
+    await connection.beginTransaction();
+
+    const [rows] = await connection.query(
+      'SELECT violator_id, violation_type FROM violations WHERE violation_id = ? FOR UPDATE',
+      [req.params.id]
+    );
+    if (rows.length === 0) {
+      await connection.rollback();
+      return res.redirect('/violations');
+    }
+
+    const points = DEMERIT_POINTS[rows[0].violation_type] || 1;
+    const violatorId = rows[0].violator_id;
+
+    await connection.query('DELETE FROM violations WHERE violation_id = ?', [req.params.id]);
+    await connection.query(
+      'UPDATE violators SET demerit_points = GREATEST(0, demerit_points - ?), license_status = CASE WHEN GREATEST(0, demerit_points - ?) >= ? THEN \'Flagged for Suspension\' ELSE \'Active\' END WHERE violator_id = ?',
+      [points, points, DEMERIT_THRESHOLD, violatorId]
+    );
+
+    await connection.commit();
     res.redirect('/violations');
   } catch (err) {
+    await connection.rollback();
     console.error(err);
     res.redirect('/violations');
+  } finally {
+    connection.release();
   }
 });
 

@@ -1,0 +1,19 @@
+<%- include('../partials/header', { pageTitle: 'Admin Challans' }) %>
+<div class="page-head"><h1>Challan Management</h1><p class="page-sub">System-wide challan, payment and fine collection monitoring.</p></div>
+<div class="admin-stat-grid">
+<div class="admin-stat"><div class="label">Total</div><div class="value"><%= summary.total %></div></div>
+<div class="admin-stat"><div class="label">Paid</div><div class="value"><%= summary.paid %></div></div>
+<div class="admin-stat"><div class="label">Pending</div><div class="value"><%= summary.unpaid %></div></div>
+<div class="admin-stat"><div class="label">Assessed</div><div class="value">₹<%= Number(summary.assessed||0).toFixed(2) %></div></div>
+<div class="admin-stat"><div class="label">Collected</div><div class="value">₹<%= Number(summary.collected||0).toFixed(2) %></div></div>
+</div>
+<form class="admin-filter" method="get" action="/admin/challans">
+<div class="field"><label>Search</label><input name="q" value="<%= filters.q %>" placeholder="Challan, vehicle, licence, violator, type"></div>
+<div class="field"><label>Status</label><select name="status"><option value="">All</option><option value="Paid" <%= filters.status==='Paid'?'selected':'' %>>Paid</option><option value="Unpaid" <%= filters.status==='Unpaid'?'selected':'' %>>Pending</option></select></div>
+<div class="field"><label>From</label><input type="date" name="from" value="<%= filters.from %>"></div>
+<div class="field"><label>To</label><input type="date" name="to" value="<%= filters.to %>"></div>
+<button class="button">Filter</button><a class="button" href="/admin/challans">Reset</a></form>
+<div class="panel admin-table-wrap"><table><thead><tr><th>Challan</th><th>Vehicle</th><th>Violator</th><th>Violation</th><th>Fine</th><th>Status</th><th>Paid</th><th>Payment Date</th></tr></thead><tbody>
+<% challans.forEach(c => { %><tr><td><%= c.challan_id %></td><td><%= c.registration_no %></td><td><%= c.violator_name %></td><td><%= c.violation_type %></td><td>₹<%= Number(c.fine_amount).toFixed(2) %></td><td><%= c.status %></td><td>₹<%= Number(c.paid_amount||0).toFixed(2) %></td><td><%= c.payment_date ? new Date(c.payment_date).toLocaleString() : '—' %></td></tr><% }) %>
+</tbody></table></div>
+<%- include('../partials/footer') %>

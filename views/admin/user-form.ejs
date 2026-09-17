@@ -1,0 +1,16 @@
+<%- include('../partials/header', { pageTitle: mode === 'add' ? 'Create User' : 'Edit User' }) %>
+<div class="page-head"><h1><%= mode === 'add' ? 'Create User' : 'Edit User' %></h1><p class="page-sub">Administrator account management.</p></div>
+<% if (error) { %><p class="error"><%= error %></p><% } %>
+<form class="panel form-grid" method="post" action="<%= mode === 'add' ? '/admin/users/add' : '/admin/users/edit/' + target.user_id %>">
+  <label>Username<input name="username" required value="<%= target ? target.username : '' %>"></label>
+  <label>Role<select name="role" id="role" required><% ['admin','officer','violator'].forEach(r => { %><option value="<%= r %>" <%= target && target.role===r?'selected':'' %>><%= r %></option><% }) %></select></label>
+  <label>Password <span class="page-sub"><%= mode==='edit' ? '(leave blank to keep current password)' : '' %></span><input type="password" name="password" <%= mode==='add' ? 'required' : '' %>></label>
+  <label id="violator-field">Linked Violator<select name="violator_id"><option value="">None</option><% violators.forEach(v => { %><option value="<%= v.violator_id %>" <%= target && Number(target.violator_id)===Number(v.violator_id)?'selected':'' %>><%= v.name %> — <%= v.license_no %></option><% }) %></select></label>
+  <div><button class="button" type="submit">Save</button> <a class="button" href="/admin/users">Cancel</a></div>
+</form>
+<script>
+const role = document.getElementById('role'), vf = document.getElementById('violator-field');
+function sync(){ vf.style.display = role.value === 'violator' ? '' : 'none'; }
+role.addEventListener('change', sync); sync();
+</script>
+<%- include('../partials/footer') %>

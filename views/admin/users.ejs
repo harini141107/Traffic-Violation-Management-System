@@ -1,0 +1,12 @@
+<%- include('../partials/header', { pageTitle: 'User Management' }) %>
+<div class="page-head"><h1>User Management</h1><p class="page-sub">Manage system accounts and their linked violator records.</p></div>
+<div class="admin-actions"><a class="button" href="/admin/users/add">Create User</a></div>
+<form class="admin-filter" method="get" action="/admin/users">
+  <div class="field"><label>Search</label><input name="search" value="<%= filters.search %>" placeholder="Username, name or licence"></div>
+  <div class="field"><label>Role</label><select name="role"><option value="">All roles</option><% ['admin','officer','violator'].forEach(r => { %><option value="<%= r %>" <%= filters.role===r?'selected':'' %>><%= r %></option><% }) %></select></div>
+  <button class="button" type="submit">Filter</button><a class="button" href="/admin/users">Reset</a>
+</form>
+<% if (error) { %><p class="error"><%= error %></p><% } %>
+<div class="panel admin-table-wrap"><table><thead><tr><th>ID</th><th>Username</th><th>Role</th><th>Linked Violator</th><th>Licence</th><th>Created</th><th>Actions</th></tr></thead>
+<tbody><% users.forEach(u => { %><tr><td><%= u.user_id %></td><td><%= u.username %></td><td><%= u.role %></td><td><%= u.violator_name || '—' %></td><td><%= u.license_no || '—' %></td><td><%= new Date(u.created_at).toLocaleString() %></td><td><a href="/admin/users/edit/<%= u.user_id %>">Edit</a> <% if (u.user_id !== user.id) { %><form style="display:inline" method="post" action="/admin/users/delete/<%= u.user_id %>" onsubmit="return confirm('Delete this user account?')"><button type="submit">Delete</button></form><% } %></td></tr><% }) %></tbody></table></div>
+<%- include('../partials/footer') %>

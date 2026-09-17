@@ -10,17 +10,48 @@ router.get('/register', (req, res) => {
 
 // POST register
 router.post('/register', async (req, res) => {
-  const { username, password, role } = req.body;
+  const { username, password, role, name, license_no, phone, address } = req.body;
+  const connection = await pool.getConnection();
   try {
+    await connection.beginTransaction();
+
+    let violatorId = null;
+
+    if (role === 'violator') {
+      if (!name || !license_no) {
+        await connection.rollback();
+        return res.render('register', { error: 'Full Name and License Number are required for a Violator account.' });
+      }
+
+      const [existing] = await connection.query(
+        'SELECT violator_id FROM violators WHERE license_no = ?', [license_no]
+      );
+
+      if (existing.length > 0) {
+        violatorId = existing[0].violator_id;
+      } else {
+        const [result] = await connection.query(
+          'INSERT INTO violators (name, license_no, phone, address) VALUES (?, ?, ?, ?)',
+          [name, license_no, phone || null, address || null]
+        );
+        violatorId = result.insertId;
+      }
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    await pool.query(
-      'INSERT INTO users (username, password, role) VALUES (?, ?, ?)',
-      [username, hashedPassword, role || 'officer']
+    await connection.query(
+      'INSERT INTO users (username, password, role, violator_id) VALUES (?, ?, ?, ?)',
+      [username, hashedPassword, role || 'officer', violatorId]
     );
+
+    await connection.commit();
     res.redirect('/login');
   } catch (err) {
+    await connection.rollback();
     console.error(err);
     res.render('register', { error: 'Username already exists or input is invalid.' });
+  } finally {
+    connection.release();
   }
 });
 
@@ -52,7 +83,12 @@ router.post('/login', async (req, res) => {
       });
     }
 
-    req.session.user = { id: user.user_id, username: user.username, role: user.role };
+    req.session.user = {
+      id: user.user_id,
+      username: user.username,
+      role: user.role,
+      violator_id: user.violator_id || null,
+    };
     res.redirect('/dashboard');
   } catch (err) {
     console.error(err);

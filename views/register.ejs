@@ -26,16 +26,35 @@
           <label>Password</label>
           <input type="password" name="password" required>
           <label>Role</label>
-          <select name="role">
+          <select name="role" id="roleSelect" onchange="toggleViolatorFields()">
             <option value="officer">Officer</option>
             <option value="admin">Admin</option>
             <option value="violator">Violator</option>
           </select>
+
+          <div id="violatorFields" style="display:none;">
+            <label>Full Name</label>
+            <input type="text" name="name">
+            <label>License Number</label>
+            <input type="text" name="license_no">
+            <label>Phone</label>
+            <input type="text" name="phone">
+            <label>Address</label>
+            <input type="text" name="address">
+          </div>
+
           <button type="submit">Register</button>
         </form>
         <a class="link" href="/login">Already have an account? Login</a>
       </div>
     </div>
   </div>
+
+  <script>
+    function toggleViolatorFields() {
+      const role = document.getElementById('roleSelect').value;
+      document.getElementById('violatorFields').style.display = role === 'violator' ? 'block' : 'none';
+    }
+  </script>
 </body>
 </html>

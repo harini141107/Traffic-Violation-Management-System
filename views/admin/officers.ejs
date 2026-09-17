@@ -1,0 +1,6 @@
+<%- include('../partials/header', { pageTitle: 'Officer Management' }) %>
+<div class="page-head"><h1>Officer Management</h1><p class="page-sub">Manage officer accounts. Activity attribution is not available in the current schema.</p></div>
+<div class="admin-actions"><a class="button" href="/admin/users/add">Add Officer</a><a class="button" href="/admin/users?role=officer">All Officer Accounts</a></div>
+<div class="panel admin-table-wrap"><table><thead><tr><th>ID</th><th>Username</th><th>Created</th><th>Activity</th><th>Actions</th></tr></thead>
+<tbody><% officers.forEach(o => { %><tr><td><%= o.user_id %></td><td><%= o.username %></td><td><%= new Date(o.created_at).toLocaleString() %></td><td>Not attributable</td><td><a href="/admin/users/edit/<%= o.user_id %>">Edit</a></td></tr><% }) %></tbody></table></div>
+<%- include('../partials/footer') %>
